@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swim Check - Motivational Time Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        /* Custom styles */
+        .time-value {
+            font-family: 'Courier New', monospace;
+            text-align: right;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .button-group button.active {
+            background-color: var(--pico-primary-background);
+        }
+
+        .event-grid {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        .event-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .event-table th,
+        .event-table td {
+            padding: 0.5rem;
+            border: 1px solid var(--pico-muted-border-color);
+        }
+
+        .event-table th {
+            text-align: center;
+            background-color: var(--pico-background-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .event-table td {
+            text-align: right;
+        }
+
+        .event-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .time-input {
+            width: 100%;
+            font-family: 'Courier New', monospace;
+            text-align: right;
+            padding: 0.25rem;
+            margin: 0;
+        }
+
+        /* Time qualification colors */
+        .qual-a {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .qual-b-plus {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+        }
+
+        .qual-b {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .qual-none {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .qual-a {
+                background-color: #1e4620;
+                border-color: #28a745;
+            }
+
+            .qual-b-plus {
+                background-color: #0c3c47;
+                border-color: #17a2b8;
+            }
+
+            .qual-b {
+                background-color: #4d4013;
+                border-color: #ffc107;
+            }
+
+            .qual-none {
+                background-color: #4a1c1f;
+                border-color: #dc3545;
+            }
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .season-info {
+            font-size: 0.9rem;
+            color: var(--pico-muted-color);
+            margin-bottom: 2rem;
+        }
+
+        select {
+            margin-bottom: 1rem;
+        }
+
+        .note-text {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--pico-muted-color);
+            margin-top: 0.5rem;
+        }
+
+        .clear-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--pico-muted-border-color);
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="app-header">
+            <h1>Swim Check</h1>
+            <p class="season-info" id="seasonInfo">Loading...</p>
+        </div>
+
+        <!-- Controls Section -->
+        <section>
+            <label for="ageGroupSelect">Age Group</label>
+            <select id="ageGroupSelect" aria-label="Select age group">
+                <option value="">Select Age Group</option>
+            </select>
+
+            <label>Gender</label>
+            <div class="button-group" id="genderButtons" role="group" aria-label="Select gender">
+            </div>
+
+            <label>Course Type</label>
+            <div class="button-group" id="courseButtons" role="group" aria-label="Select course type">
+                <button type="button" data-course="SCY">SCY</button>
+                <button type="button" data-course="SCM">SCM</button>
+                <button type="button" data-course="LCM">LCM</button>
+            </div>
+
+            <div id="noteDisplay" class="note-text"></div>
+        </section>
+
+        <!-- Event Grid Section -->
+        <section class="event-grid">
+            <div id="eventsContainer">
+                <p style="text-align: center; color: var(--pico-muted-color);">
+                    Please select age group, gender, and course type to view events.
+                </p>
+            </div>
+        </section>
+
+        <!-- Clear Times Section -->
+        <section class="clear-section">
+            <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
+        </section>
+    </main>
+
+    <script>
+        // App state
+        let swimData = null;
+        let appState = {
+            ageGroup: null,
+            gender: null,
+            courseType: 'SCY',
+            times: {}
+        };
+
+        // Load JSON data
+        async function loadData() {
+            try {
+                const response = await fetch('swim_time_standards.json');
+                swimData = await response.json();
+                document.getElementById('seasonInfo').textContent = swimData.title;
+                initializeApp();
+            } catch (error) {
+                console.error('Failed to load swim data:', error);
+                document.getElementById('seasonInfo').textContent = 'Error loading data';
+            }
+        }
+
+        // Initialize the app
+        function initializeApp() {
+            loadStateFromStorage();
+            populateAgeGroups();
+            populateGenderButtons();
+            setupEventListeners();
+            renderEvents();
+        }
+
+        // Local storage functions
+        function saveStateToStorage() {
+            localStorage.setItem('swimCheckState', JSON.stringify(appState));
+        }
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('swimCheckState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                appState = { ...appState, ...parsed };
+            }
+        }
+
+        // Populate age groups dropdown
+        function populateAgeGroups() {
+            const select = document.getElementById('ageGroupSelect');
+            swimData.ageGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.age;
+                option.textContent = group.age;
+                select.appendChild(option);
+            });
+
+            if (appState.ageGroup) {
+                select.value = appState.ageGroup;
+            }
+        }
+
+        // Populate gender buttons
+        function populateGenderButtons() {
+            const container = document.getElementById('genderButtons');
+            const genders = new Set();
+
+            swimData.ageGroups.forEach(group => {
+                Object.keys(group.genders).forEach(gender => genders.add(gender));
+            });
+
+            genders.forEach(gender => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = gender;
+                button.dataset.gender = gender;
+                if (appState.gender === gender) {
+                    button.classList.add('active');
+                }
+                container.appendChild(button);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Age group selection
+            document.getElementById('ageGroupSelect').addEventListener('change', (e) => {
+                appState.ageGroup = e.target.value;
+                saveStateToStorage();
+                renderEvents();
+            });
+
+            // Gender buttons
+            document.getElementById('genderButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#genderButtons button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                    appState.gender = e.target.dataset.gender;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            // Course type buttons
+            document.getElementById('courseButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#courseButtons button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                    appState.courseType = e.target.dataset.course;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            // Set initial course button active state
+            if (appState.courseType) {
+                const courseBtn = document.querySelector(`[data-course="${appState.courseType}"]`);
+                if (courseBtn) courseBtn.classList.add('active');
+            }
+
+            // Clear times button
+            document.getElementById('clearTimesBtn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to clear all entered times? This cannot be undone.')) {
+                    appState.times = {};
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+        }
+
+        // Render events table
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            const noteDisplay = document.getElementById('noteDisplay');
+            noteDisplay.textContent = '';
+
+            if (!appState.ageGroup || !appState.gender || !appState.courseType) {
+                container.innerHTML = '<p style="text-align: center; color: var(--pico-muted-color);">Please select age group, gender, and course type to view events.</p>';
+                return;
+            }
+
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData || !ageGroupData.genders[appState.gender]) {
+                container.innerHTML = '<p style="text-align: center; color: var(--pico-muted-color);">No events found for selected criteria.</p>';
+                return;
+            }
+
+            // Display note if exists
+            if (ageGroupData.note) {
+                noteDisplay.textContent = ageGroupData.note;
+            }
+
+            const events = ageGroupData.genders[appState.gender].events;
+            const course = appState.courseType;
+
+            let tableHTML = `
+                <table class="event-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>A</th>
+                            <th>B+</th>
+                            <th>B</th>
+                            <th>Your Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            events.forEach((event, index) => {
+                const times = event[course];
+
+                // Skip events with no times for this course
+                if (!times || (times.A === null && times['B+'] === null && times.B === null)) {
+                    return;
+                }
+
+                const eventKey = `${appState.ageGroup}_${appState.gender}_${course}_${event.name}`;
+                const userTime = appState.times[eventKey] || '';
+                const qualClass = userTime ? getQualificationClass(userTime, times) : '';
+
+                tableHTML += `
+                    <tr>
+                        <td>${event.name}</td>
+                        <td class="time-value">${times.A || 'n/a'}</td>
+                        <td class="time-value">${times['B+'] || 'n/a'}</td>
+                        <td class="time-value">${times.B || 'n/a'}</td>
+                        <td class="${qualClass}">
+                            <input
+                                type="text"
+                                class="time-input"
+                                placeholder="mm:ss.ms"
+                                data-event-key="${eventKey}"
+                                value="${userTime}"
+                                aria-label="Enter time for ${event.name}"
+                            >
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+
+            // Setup time input handlers
+            setupTimeInputHandlers();
+        }
+
+        // Setup time input event handlers
+        function setupTimeInputHandlers() {
+            const inputs = document.querySelectorAll('.time-input');
+
+            inputs.forEach(input => {
+                let timeout;
+
+                input.addEventListener('input', (e) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        handleTimeInput(e.target);
+                    }, 500);
+                });
+
+                input.addEventListener('blur', (e) => {
+                    clearTimeout(timeout);
+                    handleTimeInput(e.target);
+                });
+            });
+        }
+
+        // Handle time input
+        function handleTimeInput(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+
+            if (value) {
+                appState.times[eventKey] = value;
+            } else {
+                delete appState.times[eventKey];
+            }
+
+            saveStateToStorage();
+            updateInputQualification(input);
+        }
+
+        // Update input cell qualification class
+        function updateInputQualification(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            const cell = input.parentElement;
+
+            // Remove all qual classes
+            cell.classList.remove('qual-a', 'qual-b-plus', 'qual-b', 'qual-none');
+
+            if (!value) return;
+
+            // Find the event's times
+            const [age, gender, course, eventName] = eventKey.split('_');
+            const ageGroupData = swimData.ageGroups.find(g => g.age === age);
+            if (!ageGroupData) return;
+
+            const event = ageGroupData.genders[gender].events.find(e => e.name === eventName);
+            if (!event) return;
+
+            const times = event[course];
+            const qualClass = getQualificationClass(value, times);
+            if (qualClass) {
+                cell.classList.add(qualClass);
+            }
+        }
+
+        // Get qualification class based on time comparison
+        function getQualificationClass(userTime, standards) {
+            const userSeconds = timeToSeconds(userTime);
+            if (userSeconds === null) return '';
+
+            const aTime = standards.A ? timeToSeconds(standards.A) : null;
+            const bPlusTime = standards['B+'] ? timeToSeconds(standards['B+']) : null;
+            const bTime = standards.B ? timeToSeconds(standards.B) : null;
+
+            // Lower times are better in swimming
+            if (aTime !== null && userSeconds <= aTime) {
+                return 'qual-a';
+            } else if (bPlusTime !== null && userSeconds <= bPlusTime) {
+                return 'qual-b-plus';
+            } else if (bTime !== null && userSeconds <= bTime) {
+                return 'qual-b';
+            } else {
+                return 'qual-none';
+            }
+        }
+
+        // Convert time string to seconds
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return null;
+
+            timeStr = timeStr.trim();
+
+            // Format: MM:SS.MS or SS.MS
+            const parts = timeStr.split(':');
+            let minutes = 0;
+            let seconds = 0;
+
+            if (parts.length === 2) {
+                // MM:SS.MS format
+                minutes = parseFloat(parts[0]) || 0;
+                seconds = parseFloat(parts[1]) || 0;
+            } else if (parts.length === 1) {
+                // SS.MS format
+                seconds = parseFloat(parts[0]) || 0;
+            } else {
+                return null;
+            }
+
+            return minutes * 60 + seconds;
+        }
+
+        // Initialize app on load
+        loadData();
+    </script>
+</body>
+</html>
