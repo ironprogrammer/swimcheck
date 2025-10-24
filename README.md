@@ -1,6 +1,8 @@
-# Swim Check
+# Swim Check 🏊
 
-A mobile-first single-page app for tracking swim times against Oregon Swimming motivational time standards.
+A mobile-first single-page app for tracking swim times against Oregon Swimming (OSI) motivational time standards.
+
+> Encounter an issue? Head over to the [Issues tab](https://github.com/ironprogrammer/swimcheck/issues) and let me know!
 
 ## Features
 
@@ -21,7 +23,7 @@ A mobile-first single-page app for tracking swim times against Oregon Swimming m
    - **Green**: A time qualified
    - **Blue**: B+ time qualified
    - **Yellow**: B time qualified
-   - **Red/Pink**: Did not qualify
+   - **Gray**: Did not qualify
 
 All entered data is automatically saved to your browser's local storage.
 
@@ -33,7 +35,7 @@ Enter times in the format:
 
 ## Data Source
 
-Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards) and updated 1-2 times per year.
+Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards), which are typically updated 1-2 times per year.
 
 ## Development
 
