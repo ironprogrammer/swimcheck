@@ -162,7 +162,7 @@
         /* Footer */
         .app-footer {
             text-align: center;
-            margin-top: 3rem;
+            margin-top: 1rem;
             padding: 2rem 0 1rem 0;
             border-top: 1px solid var(--pico-muted-border-color);
             color: var(--pico-muted-color);
@@ -243,6 +243,23 @@
         <section class="clear-section">
             <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
         </section>
+
+        <!-- Clear Times Confirmation Modal -->
+        <dialog id="clearTimesModal">
+            <article>
+                <header>
+                    <button aria-label="Close" rel="prev" id="closeModalBtn"></button>
+                    <p><strong>Clear All Times?</strong></p>
+                </header>
+                <p>
+                    Are you sure you want to clear all entered times? This cannot be undone.
+                </p>
+                <footer>
+                    <button type="button" class="secondary" id="cancelClearBtn">Cancel</button>
+                    <button type="button" id="confirmClearBtn">Clear All Times</button>
+                </footer>
+            </article>
+        </dialog>
 
         <!-- Footer -->
         <footer class="app-footer">
@@ -388,13 +405,27 @@
                 }
             }
 
-            // Clear times button
+            // Clear times button - show modal
             document.getElementById('clearTimesBtn').addEventListener('click', () => {
-                if (confirm('Are you sure you want to clear all entered times? This cannot be undone.')) {
-                    appState.times = {};
-                    saveStateToStorage();
-                    renderEvents();
-                }
+                document.getElementById('clearTimesModal').showModal();
+            });
+
+            // Modal close button
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+
+            // Modal cancel button
+            document.getElementById('cancelClearBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+
+            // Modal confirm button
+            document.getElementById('confirmClearBtn').addEventListener('click', () => {
+                appState.times = {};
+                saveStateToStorage();
+                renderEvents();
+                document.getElementById('clearTimesModal').close();
             });
         }
 
