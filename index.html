@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
         /* Custom styles */
         .time-value {
             font-family: 'Courier New', monospace;
-            text-align: right;
+            text-align: center;
         }
 
         .button-group {
@@ -26,6 +26,7 @@
 
         .button-group button.active {
             background-color: var(--pico-primary-background);
+            border-color: var(--pico-primary-border);
         }
 
         .event-grid {
@@ -54,7 +55,7 @@
         }
 
         .event-table td {
-            text-align: right;
+            text-align: center;
         }
 
         .event-table td:first-child {
@@ -64,53 +65,61 @@
 
         .time-input {
             width: 100%;
+            min-width: 120px;
             font-family: 'Courier New', monospace;
-            text-align: right;
-            padding: 0.25rem;
+            text-align: center;
+            padding: 0.5rem;
             margin: 0;
+            transition: all 0.3s ease;
         }
 
-        /* Time qualification colors */
-        .qual-a {
-            background-color: #d4edda;
-            border-color: #28a745;
+        /* Input border colors when standards are met */
+        tr.has-value.met-a .time-input {
+            border: 3px solid #28a745;
         }
 
-        .qual-b-plus {
-            background-color: #d1ecf1;
-            border-color: #17a2b8;
+        tr.has-value.met-b-plus .time-input {
+            border: 3px solid #17a2b8;
         }
 
-        .qual-b {
-            background-color: #fff3cd;
-            border-color: #ffc107;
+        tr.has-value.met-b .time-input {
+            border: 3px solid #ffc107;
         }
 
-        .qual-none {
-            background-color: #f8d7da;
-            border-color: #dc3545;
+        /* Row with entered value gets light gray background on all cells */
+        .event-table tr.has-value td {
+            background-color: rgba(128, 128, 128, 0.15);
+            transition: background-color 0.3s ease;
         }
 
-        @media (prefers-color-scheme: dark) {
-            .qual-a {
-                background-color: #1e4620;
-                border-color: #28a745;
-            }
+        /* Standard cells */
+        .standard-cell {
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
 
-            .qual-b-plus {
-                background-color: #0c3c47;
-                border-color: #17a2b8;
-            }
+        /* Highlight standards when met - these override the row gray background */
+        .standard-cell.met {
+            font-weight: 700;
+            border-width: 2px;
+        }
 
-            .qual-b {
-                background-color: #4d4013;
-                border-color: #ffc107;
-            }
+        .standard-cell.met-a {
+            background-color: #28a745 !important;
+            color: white;
+            border-color: #1e7e34;
+        }
 
-            .qual-none {
-                background-color: #4a1c1f;
-                border-color: #dc3545;
-            }
+        .standard-cell.met-b-plus {
+            background-color: #17a2b8 !important;
+            color: white;
+            border-color: #117a8b;
+        }
+
+        .standard-cell.met-b {
+            background-color: #ffc107 !important;
+            color: #856404;
+            border-color: #d39e00;
         }
 
         .app-header {
@@ -141,12 +150,40 @@
             padding-top: 2rem;
             border-top: 1px solid var(--pico-muted-border-color);
         }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0 1rem 0;
+            border-top: 1px solid var(--pico-muted-border-color);
+            color: var(--pico-muted-color);
+            font-size: 0.9rem;
+        }
+
+        .footer-phrase {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-phrase .heart {
+            color: #dc3545;
+        }
+
+        .app-footer a {
+            color: var(--pico-primary);
+            text-decoration: none;
+        }
+
+        .app-footer a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
     <main class="container">
         <div class="app-header">
-            <h1>Swim Check</h1>
+            <h1>Swim Check 🏊</h1>
             <p class="season-info" id="seasonInfo">Loading...</p>
         </div>
 
@@ -163,9 +200,9 @@
 
             <label>Course Type</label>
             <div class="button-group" id="courseButtons" role="group" aria-label="Select course type">
-                <button type="button" data-course="SCY">SCY</button>
-                <button type="button" data-course="SCM">SCM</button>
-                <button type="button" data-course="LCM">LCM</button>
+                <button type="button" class="secondary" data-course="SCY">SCY</button>
+                <button type="button" class="secondary" data-course="SCM">SCM</button>
+                <button type="button" class="secondary" data-course="LCM">LCM</button>
             </div>
 
             <div id="noteDisplay" class="note-text"></div>
@@ -184,6 +221,12 @@
         <section class="clear-section">
             <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
         </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
+            <p><a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">Contribute</a></p>
+        </footer>
     </main>
 
     <script>
@@ -258,10 +301,12 @@
             genders.forEach(gender => {
                 const button = document.createElement('button');
                 button.type = 'button';
+                button.className = 'secondary';
                 button.textContent = gender;
                 button.dataset.gender = gender;
                 if (appState.gender === gender) {
                     button.classList.add('active');
+                    button.classList.remove('secondary');
                 }
                 container.appendChild(button);
             });
@@ -281,8 +326,10 @@
                 if (e.target.tagName === 'BUTTON') {
                     document.querySelectorAll('#genderButtons button').forEach(btn => {
                         btn.classList.remove('active');
+                        btn.classList.add('secondary');
                     });
                     e.target.classList.add('active');
+                    e.target.classList.remove('secondary');
                     appState.gender = e.target.dataset.gender;
                     saveStateToStorage();
                     renderEvents();
@@ -294,8 +341,10 @@
                 if (e.target.tagName === 'BUTTON') {
                     document.querySelectorAll('#courseButtons button').forEach(btn => {
                         btn.classList.remove('active');
+                        btn.classList.add('secondary');
                     });
                     e.target.classList.add('active');
+                    e.target.classList.remove('secondary');
                     appState.courseType = e.target.dataset.course;
                     saveStateToStorage();
                     renderEvents();
@@ -305,7 +354,10 @@
             // Set initial course button active state
             if (appState.courseType) {
                 const courseBtn = document.querySelector(`[data-course="${appState.courseType}"]`);
-                if (courseBtn) courseBtn.classList.add('active');
+                if (courseBtn) {
+                    courseBtn.classList.add('active');
+                    courseBtn.classList.remove('secondary');
+                }
             }
 
             // Clear times button
@@ -348,10 +400,10 @@
                     <thead>
                         <tr>
                             <th>Event</th>
+                            <th>Time</th>
                             <th>A</th>
                             <th>B+</th>
                             <th>B</th>
-                            <th>Your Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -367,15 +419,28 @@
 
                 const eventKey = `${appState.ageGroup}_${appState.gender}_${course}_${event.name}`;
                 const userTime = appState.times[eventKey] || '';
-                const qualClass = userTime ? getQualificationClass(userTime, times) : '';
+                const qualification = userTime ? getQualification(userTime, times) : null;
+
+                // Add 'has-value' class to row if user has entered a time
+                // Add met class to row for input border styling
+                let rowClass = userTime ? 'has-value' : '';
+                if (qualification === 'a') {
+                    rowClass += ' met-a';
+                } else if (qualification === 'b-plus') {
+                    rowClass += ' met-b-plus';
+                } else if (qualification === 'b') {
+                    rowClass += ' met-b';
+                }
+
+                // Determine standard cell classes
+                const aClass = qualification === 'a' ? 'standard-cell met met-a' : 'standard-cell';
+                const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
+                const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
 
                 tableHTML += `
-                    <tr>
+                    <tr class="${rowClass}">
                         <td>${event.name}</td>
-                        <td class="time-value">${times.A || 'n/a'}</td>
-                        <td class="time-value">${times['B+'] || 'n/a'}</td>
-                        <td class="time-value">${times.B || 'n/a'}</td>
-                        <td class="${qualClass}">
+                        <td>
                             <input
                                 type="text"
                                 class="time-input"
@@ -384,6 +449,15 @@
                                 value="${userTime}"
                                 aria-label="Enter time for ${event.name}"
                             >
+                        </td>
+                        <td class="${aClass} time-value" data-standard="a" data-event-key="${eventKey}">
+                            ${times.A || 'n/a'}
+                        </td>
+                        <td class="${bPlusClass} time-value" data-standard="b-plus" data-event-key="${eventKey}">
+                            ${times['B+'] || 'n/a'}
+                        </td>
+                        <td class="${bClass} time-value" data-standard="b" data-event-key="${eventKey}">
+                            ${times.B || 'n/a'}
                         </td>
                     </tr>
                 `;
@@ -433,19 +507,35 @@
             }
 
             saveStateToStorage();
-            updateInputQualification(input);
+            updateStandardHighlighting(input);
         }
 
-        // Update input cell qualification class
-        function updateInputQualification(input) {
+        // Update standard cell highlighting
+        function updateStandardHighlighting(input) {
             const eventKey = input.dataset.eventKey;
             const value = input.value.trim();
-            const cell = input.parentElement;
 
-            // Remove all qual classes
-            cell.classList.remove('qual-a', 'qual-b-plus', 'qual-b', 'qual-none');
+            // Find the row
+            const row = input.closest('tr');
 
-            if (!value) return;
+            // Get all standard cells in this row
+            const standardCells = row.querySelectorAll('.standard-cell');
+
+            // Remove all highlight classes from standard cells
+            standardCells.forEach(cell => {
+                cell.classList.remove('met', 'met-a', 'met-b-plus', 'met-b');
+            });
+
+            // Remove qualification classes from row
+            row.classList.remove('met-a', 'met-b-plus', 'met-b');
+
+            // Add or remove 'has-value' class on row based on input
+            if (value) {
+                row.classList.add('has-value');
+            } else {
+                row.classList.remove('has-value');
+                return;
+            }
 
             // Find the event's times
             const [age, gender, course, eventName] = eventKey.split('_');
@@ -456,16 +546,36 @@
             if (!event) return;
 
             const times = event[course];
-            const qualClass = getQualificationClass(value, times);
-            if (qualClass) {
-                cell.classList.add(qualClass);
+            const qualification = getQualification(value, times);
+
+            // Highlight the appropriate standard cell (if any)
+            // Row already has light gray background from 'has-value' class
+            if (qualification === 'a') {
+                const aCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'a');
+                if (aCell) {
+                    aCell.classList.add('met', 'met-a');
+                }
+                row.classList.add('met-a');
+            } else if (qualification === 'b-plus') {
+                const bPlusCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b-plus');
+                if (bPlusCell) {
+                    bPlusCell.classList.add('met', 'met-b-plus');
+                }
+                row.classList.add('met-b-plus');
+            } else if (qualification === 'b') {
+                const bCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b');
+                if (bCell) {
+                    bCell.classList.add('met', 'met-b');
+                }
+                row.classList.add('met-b');
             }
+            // If qualification === 'none', just the row gray background shows (no cell highlighting)
         }
 
-        // Get qualification class based on time comparison
-        function getQualificationClass(userTime, standards) {
+        // Get qualification level (returns 'a', 'b-plus', 'b', or 'none')
+        function getQualification(userTime, standards) {
             const userSeconds = timeToSeconds(userTime);
-            if (userSeconds === null) return '';
+            if (userSeconds === null) return null;
 
             const aTime = standards.A ? timeToSeconds(standards.A) : null;
             const bPlusTime = standards['B+'] ? timeToSeconds(standards['B+']) : null;
@@ -473,13 +583,13 @@
 
             // Lower times are better in swimming
             if (aTime !== null && userSeconds <= aTime) {
-                return 'qual-a';
+                return 'a';
             } else if (bPlusTime !== null && userSeconds <= bPlusTime) {
-                return 'qual-b-plus';
+                return 'b-plus';
             } else if (bTime !== null && userSeconds <= bTime) {
-                return 'qual-b';
+                return 'b';
             } else {
-                return 'qual-none';
+                return 'none';
             }
         }
 
