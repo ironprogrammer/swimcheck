@@ -638,8 +638,31 @@
             return minutes * 60 + seconds;
         }
 
+        // Random footer phrases
+        function setRandomFooterPhrase() {
+            const phrases = [
+                'Made with <span class="heart">❤️</span> in war-torn PDX',
+                'Made with <span class="heart">❤️</span> while PDX is aflame',
+                'Built with <span class="heart">❤️</span> and the bravery to venture into PDX streets',
+                'Made with <span class="heart">❤️</span> between pickleball games in war-ravaged PDX',
+                'Crafted with <span class="heart">❤️</span> from the front lines of PDX',
+                'Freshly brewed with <span class="heart">❤️</span> and Courier Coffee',
+                'Finely tuned with <span class="heart">❤️</span> and Blue Star donuts',
+                'Bravely coded with <span class="heart">❤️</span> from the epicenter of the PDX war zone',
+                'Banged out with <span class="heart">❤️</span> and used gear from Revival Drums PDX',
+                'Shamelessly sponsored with <span class="heart">❤️</span> by [YOUR COMPANY HERE]'
+            ];
+
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            const footerElement = document.getElementById('footerPhrase');
+            if (footerElement) {
+                footerElement.innerHTML = randomPhrase;
+            }
+        }
+
         // Initialize app on load
         loadData();
+        setRandomFooterPhrase();
     </script>
 </body>
 </html>
