@@ -162,20 +162,34 @@
         }
 
         .footer-phrase {
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .footer-phrase .heart {
             color: #dc3545;
         }
 
-        .app-footer a {
+        .footer-support {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-support a {
             color: var(--pico-primary);
             text-decoration: none;
         }
 
-        .app-footer a:hover {
+        .footer-support a:hover {
             text-decoration: underline;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
         }
 
     </style>
@@ -225,7 +239,13 @@
         <!-- Footer -->
         <footer class="app-footer">
             <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
-            <p><a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">Contribute</a></p>
+            <div class="footer-support">
+                <p>Do you find Swim Check useful?<br>Consider <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">contributing on GitHub</a> or buying me a coffee!</p>
+            </div>
+            <div class="footer-buttons">
+                <iframe src="https://ghbtns.com/github-btn.html?user=ironprogrammer&repo=swimcheck&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
+                <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;"></a>
+            </div>
         </footer>
     </main>
 
