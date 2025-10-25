@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -25,13 +25,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verify required files exist
+        run: |
+          for f in index.html swim_time_standards.json; do
+            if [ ! -f "$f" ]; then
+              echo "::error ::Required file '$f' not found. Aborting deployment."
+              exit 1
+            fi
+          done
+
+      - name: Prepare publish directory
+        run: |
+          rm -rf .publish
+          mkdir -p .publish
+          cp index.html .publish/
+          cp swim_time_standards.json .publish/
+          # show what will be published (helpful in logs)
+          ls -la .publish
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: .publish
 
       - name: Deploy to GitHub Pages
         id: deployment
