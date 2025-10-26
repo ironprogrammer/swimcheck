@@ -21,7 +21,7 @@ jobs:
           echo "This will detect:"
           echo "  - Newer year ranges (e.g., 2025-2026, 2026-2027, etc.)"
           echo "  - URL changes for the same year (data corrections)"
-          node check-for-new-pdf.js
+          node .github/scripts/check-for-new-pdf.js
         continue-on-error: true
 
       - name: Evaluate check result

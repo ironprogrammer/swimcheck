@@ -4,6 +4,11 @@
  * Check for new Oregon Swimming Time Standards PDF
  * Dynamically detects newer year ranges or URL changes by comparing
  * against the stored data in swim_time_standards.json
+ *
+ * Usage:
+ *   node check-for-new-pdf.js [json-file-path]
+ *
+ * If json-file-path is not provided, defaults to swim_time_standards.json in project root
  */
 
 const https = require('https');
@@ -11,7 +16,11 @@ const fs = require('fs');
 const path = require('path');
 
 const TARGET_URL = 'https://www.oregonswimming.org/page/competition/time-standards';
-const JSON_FILE = path.join(__dirname, 'swim_time_standards.json');
+
+// Accept optional JSON file path as argument, otherwise use default
+const PROJECT_ROOT = path.join(__dirname, '..', '..');
+const DEFAULT_JSON_FILE = path.join(PROJECT_ROOT, 'swim_time_standards.json');
+const JSON_FILE = process.argv[2] ? path.resolve(process.argv[2]) : DEFAULT_JSON_FILE;
 
 function fetchPage(url) {
   return new Promise((resolve, reject) => {
