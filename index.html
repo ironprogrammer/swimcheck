@@ -100,6 +100,12 @@
             transition: background-color 0.3s ease;
         }
 
+        /* Row with invalid standard gets light yellow background on all cells */
+        .event-table tr.has-invalid-standard td {
+            background-color: #fff9e6;
+            transition: background-color 0.3s ease;
+        }
+
         /* Standard cells */
         .standard-cell {
             font-family: 'Courier New', monospace;
@@ -483,6 +489,12 @@
                 // Add 'has-value' class to row if user has entered a time
                 // Add met class to row for input border styling
                 let rowClass = userTime ? 'has-value' : '';
+
+                // Add 'has-invalid-standard' class if any standard has warning emoji
+                if (hasInvalidStandard(times)) {
+                    rowClass += ' has-invalid-standard';
+                }
+
                 if (qualification === 'a') {
                     rowClass += ' met-a';
                 } else if (qualification === 'b-plus') {
@@ -636,9 +648,10 @@
             const userSeconds = timeToSeconds(userTime);
             if (userSeconds === null) return null;
 
-            const aTime = standards.A ? timeToSeconds(standards.A) : null;
-            const bPlusTime = standards['B+'] ? timeToSeconds(standards['B+']) : null;
-            const bTime = standards.B ? timeToSeconds(standards.B) : null;
+            // Skip standards with warning emoji (invalid data)
+            const aTime = (standards.A && !standards.A.includes('⚠️')) ? timeToSeconds(standards.A) : null;
+            const bPlusTime = (standards['B+'] && !standards['B+'].includes('⚠️')) ? timeToSeconds(standards['B+']) : null;
+            const bTime = (standards.B && !standards.B.includes('⚠️')) ? timeToSeconds(standards.B) : null;
 
             // Lower times are better in swimming
             if (aTime !== null && userSeconds <= aTime) {
@@ -652,11 +665,19 @@
             }
         }
 
+        // Check if any standard has invalid data (contains warning emoji)
+        function hasInvalidStandard(times) {
+            return (times.A && times.A.includes('⚠️')) ||
+                   (times['B+'] && times['B+'].includes('⚠️')) ||
+                   (times.B && times.B.includes('⚠️'));
+        }
+
         // Convert time string to seconds
         function timeToSeconds(timeStr) {
             if (!timeStr) return null;
 
-            timeStr = timeStr.trim();
+            // Strip non-time characters (only allow numerics, ':', and '.')
+            timeStr = timeStr.trim().replace(/[^0-9:.]/g, '');
 
             // Format: MM:SS.MS or SS.MS
             const parts = timeStr.split(':');
