@@ -1,0 +1,75 @@
+name: Check for New OSI Time Standards PDF
+
+on:
+  # Run daily at 9 AM Pacific Time (5 PM UTC)
+  schedule:
+    - cron: '0 17 * * *'
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  check-and-process:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for new PDF
+        id: check_pdf
+        run: |
+          echo "Checking for changes to OSI Time Standards..."
+          echo "This will detect:"
+          echo "  - Newer year ranges (e.g., 2025-2026, 2026-2027, etc.)"
+          echo "  - URL changes for the same year (data corrections)"
+          node check-for-new-pdf.js
+        continue-on-error: true
+
+      - name: Evaluate check result
+        id: evaluate
+        run: |
+          if [ ${{ steps.check_pdf.outcome }} == 'success' ]; then
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "Check succeeded - changes detected (newer year or updated URL)"
+          else
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "Check completed - no changes detected"
+          fi
+
+      - name: Log final status
+        run: |
+          echo "=========================================="
+          echo "Final Workflow Status"
+          echo "=========================================="
+          echo "Check outcome: ${{ steps.check_pdf.outcome }}"
+          echo "Changes detected: ${{ steps.evaluate.outputs.changes_detected }}"
+          if [ "${{ steps.evaluate.outputs.changes_detected }}" == "true" ]; then
+            echo "Next: Workflow will continue to subsequent steps"
+          else
+            echo "Next: Workflow will end (no further action needed)"
+          fi
+          echo "=========================================="
+
+      # This step only runs if changes were detected
+      - name: Process changes (placeholder)
+        if: steps.evaluate.outputs.changes_detected == 'true'
+        run: |
+          echo "=========================================="
+          echo "CHANGES DETECTED - Running next steps"
+          echo "=========================================="
+          echo "This is where you would add steps to:"
+          echo "  - Download the new/updated PDF"
+          echo "  - Parse the PDF data"
+          echo "  - Update swim_time_standards.json with new data and metadata"
+          echo "  - Commit changes"
+          echo "  - Or trigger another workflow"
+          echo "=========================================="
+
+          # Example: Trigger another workflow or job
+          # You can add more steps here or use workflow_dispatch to trigger another action
+
+      - name: Workflow complete
+        run: |
+          echo "Workflow execution complete"
+          if [ "${{ steps.evaluate.outputs.changes_detected }}" == "false" ]; then
+            echo "Ending workflow - will check again on next scheduled run"
+          fi
