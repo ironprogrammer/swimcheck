@@ -8,19 +8,17 @@ Please consider helping me cover my kid's swim meet fees!
 
 <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-## Data Corrections - 2024-2025 Time Standards
+## Data Inconsistencies ⚠️
 
-The following guesstimated "corrections" were applied to clearly inconsistent data\* in the source PDF from the OSI site:
+The following issues were observed in the source data from the OSI site, and are highlighted in the app:
 
-| Age/Gender | Event | Course | Standard | PDF Value | JSON Value | Status | Reason |
-|------------|-------|--------|----------|-----------|------------|--------|--------|
-| Girls 9 | 100 Breast | LCM | A | `1:96.99` | `1:56.99` | ✅ Corrected | Invalid format |
-| Girls 10 | 100 Fly | LCM | B+ | `125:79.19` | `1:54.19` | ✅ Corrected | Possible OCR error |
-| Girls 13 | 200 Breast | SCM | B | `2:51.89`** | `2:51.89` | ⚠️ Error | B faster than A/B+ |
+| Age/Gender | Event      | Course | Standard | Value       | Issue              |
+| ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
+| Girls 9    | 100 Breast | LCM    | A        | `1:96.99`   | Invalid format      |
+| Girls 10   | 100 Fly    | LCM    | B+       | `125:79.19` | Invalid format      |
+| Girls 13   | 200 Breast | SCM    | B        | `2:51.89`   | Invalid progression |
 
-\* *The OSI PDF may contain errors; and so can this app! Refer directly OSI for questions/corrections.*
-
-\** *Value not updated in JSON, however `3:31.89` might be the expected value based on time progression for this event.*
+\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
 
 > 🪲 Encounter any other issues? Head over to the [Issues tab](https://github.com/ironprogrammer/swimcheck/issues) and let me know!
 
