@@ -2,7 +2,7 @@
 
 A mobile-first single-page app for tracking swim times against [Oregon Swimming (OSI)](https://www.oregonswimming.org) motivational time standards.
 
-## Did you find this app useful?
+## Do you find this app useful?
 
 Please consider helping me cover my kid's swim meet fees!
 
