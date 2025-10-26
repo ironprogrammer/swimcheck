@@ -21,7 +21,16 @@ jobs:
           echo "This will detect:"
           echo "  - Newer year ranges (e.g., 2025-2026, 2026-2027, etc.)"
           echo "  - URL changes for the same year (data corrections)"
-          node .github/scripts/check-for-new-pdf.js
+          OUTPUT=$(node .github/scripts/check-for-new-pdf.js)
+          echo "$OUTPUT"
+
+          # Extract outputs for next steps
+          if echo "$OUTPUT" | grep -q "GITHUB_OUTPUT:"; then
+            PDF_URL=$(echo "$OUTPUT" | grep "PDF_URL=" | cut -d'=' -f2-)
+            LINK_TEXT=$(echo "$OUTPUT" | grep "LINK_TEXT=" | cut -d'=' -f2-)
+            echo "pdf_url=$PDF_URL" >> $GITHUB_OUTPUT
+            echo "link_text=$LINK_TEXT" >> $GITHUB_OUTPUT
+          fi
         continue-on-error: true
 
       - name: Evaluate check result
@@ -50,22 +59,17 @@ jobs:
           echo "=========================================="
 
       # This step only runs if changes were detected
-      - name: Process changes (placeholder)
+      - name: Process new PDF with Claude
         if: steps.evaluate.outputs.changes_detected == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           echo "=========================================="
-          echo "CHANGES DETECTED - Running next steps"
+          echo "CHANGES DETECTED - Processing PDF"
           echo "=========================================="
-          echo "This is where you would add steps to:"
-          echo "  - Download the new/updated PDF"
-          echo "  - Parse the PDF data"
-          echo "  - Update swim_time_standards.json with new data and metadata"
-          echo "  - Commit changes"
-          echo "  - Or trigger another workflow"
-          echo "=========================================="
-
-          # Example: Trigger another workflow or job
-          # You can add more steps here or use workflow_dispatch to trigger another action
+          bash .github/scripts/process-new-pdf.sh \
+            "${{ steps.check_pdf.outputs.pdf_url }}" \
+            "${{ steps.check_pdf.outputs.link_text }}"
 
       - name: Workflow complete
         run: |
