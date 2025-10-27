@@ -144,48 +144,80 @@ def extract_event_data(table_rows, start_idx, age_group):
 
 def extract_tables_from_pdf(pdf_data):
     """Extract all tables from PDF and parse into JSON structure"""
-    
+
     age_groups = []
-    
+    age_groups_dict = {}  # Track age groups by name to merge across pages
+    current_age = None  # Track the last age group for continuations
+
     with pdfplumber.open(BytesIO(pdf_data)) as pdf:
         for page_num, page in enumerate(pdf.pages, 1):
             print(f"Processing page {page_num}...")
-            
+
             tables = page.extract_tables()
-            
+
             for table in tables:
                 i = 0
                 while i < len(table):
                     row = table[i]
-                    
+
                     # Look for age group header
                     age = extract_age_from_header(row)
-                    
+
                     if age:
                         print(f"  Found age group: {age}")
-                        
+                        current_age = age
+
                         # Extract events for this age group
                         events_girls, events_boys, next_i = extract_event_data(table, i + 2, age)
-                        
+
                         if events_girls:  # Only add if we found events
-                            age_group = {
-                                "age": age,
-                                "genders": {
-                                    "Girls": {
-                                        "events": events_girls
-                                    },
-                                    "Boys": {
-                                        "events": events_boys
-                                    }
+                            # Check if this age group already exists (from previous page)
+                            if age in age_groups_dict:
+                                # Merge events with existing age group
+                                age_groups_dict[age]['girls'].extend(events_girls)
+                                age_groups_dict[age]['boys'].extend(events_boys)
+                                print(f"    Merged {len(events_girls)} events (total: {len(age_groups_dict[age]['girls'])})")
+                            else:
+                                # New age group
+                                age_groups_dict[age] = {
+                                    'girls': events_girls,
+                                    'boys': events_boys
                                 }
-                            }
-                            age_groups.append(age_group)
-                            print(f"    Extracted {len(events_girls)} events")
-                        
+                                print(f"    Extracted {len(events_girls)} events")
+
+                        i = next_i
+                    elif current_age and i == 0:
+                        # Page starts with events (no header) - continuation from previous page
+                        print(f"  Continuation of age group: {current_age}")
+
+                        # Extract events starting from row 0
+                        events_girls, events_boys, next_i = extract_event_data(table, i, current_age)
+
+                        if events_girls and current_age in age_groups_dict:
+                            # Merge with existing age group
+                            age_groups_dict[current_age]['girls'].extend(events_girls)
+                            age_groups_dict[current_age]['boys'].extend(events_boys)
+                            print(f"    Merged {len(events_girls)} continuation events (total: {len(age_groups_dict[current_age]['girls'])})")
+
                         i = next_i
                     else:
                         i += 1
-    
+
+    # Convert dictionary back to list format
+    for age, data in age_groups_dict.items():
+        age_group = {
+            "age": age,
+            "genders": {
+                "Girls": {
+                    "events": data['girls']
+                },
+                "Boys": {
+                    "events": data['boys']
+                }
+            }
+        }
+        age_groups.append(age_group)
+
     return age_groups
 
 
