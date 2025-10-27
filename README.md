@@ -14,9 +14,12 @@ The following issues were observed in the source data from the OSI site, and are
 
 | Age/Gender | Event      | Course | Standard | Value       | Issue              |
 | ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
-| Girls 9    | 100 Breast | LCM    | A        | `1:96.99`   | Invalid format      |
-| Girls 10   | 100 Fly    | LCM    | B+       | `125:79.19` | Invalid format      |
-| Girls 13   | 200 Breast | SCM    | B        | `2:51.89`   | Invalid progression |
+| Girls 9 | 100 Breast | LCM | A | `1:96.99⚠️` | Invalid format |
+| Girls 10 | 100 Fly | LCM | B+ | `125:79.19⚠️` | Invalid format |
+| Girls 13 | 200 Breast | SCM | B | `2:51.89⚠️` | Invalid progression |
+| Girls 14 | 200 IM | SCM | B | `2:97.49⚠️` | Invalid format |
+| Boys 14 | 1500 Free | LCM | B | `22:62.29⚠️` | Invalid format |
+| Boys 14 | 800 Free | LCM | B | `11:82.09⚠️` | Invalid format |
 
 \* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
 
