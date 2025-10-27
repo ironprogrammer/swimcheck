@@ -130,7 +130,7 @@ Extract the data now and return the complete JSON object:`;
 
   const requestBody = {
     model: MODEL,
-    max_tokens: 32000,
+    max_tokens: 50000,  // Current JSON is ~37K tokens, add buffer for formatting
     messages: [
       {
         role: 'user',
