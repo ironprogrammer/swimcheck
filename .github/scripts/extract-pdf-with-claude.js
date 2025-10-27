@@ -11,6 +11,7 @@
  *
  * Environment Variables:
  *   ANTHROPIC_API_KEY - Required. Your Anthropic API key
+ *   CLAUDE_MODEL - Optional. Override the default model (default: claude-sonnet-4-5-20250929)
  *
  * Arguments:
  *   pdf-url: URL to the PDF file to extract
@@ -28,7 +29,8 @@ const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_API_VERSION = '2023-06-01';
 
 // Claude model to use for extraction
-const MODEL = 'claude-sonnet-4-5-20250929';
+// Can be overridden with CLAUDE_MODEL environment variable
+const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-5-20250929';
 
 /**
  * Download PDF from URL
