@@ -123,7 +123,7 @@ bash .github/scripts/validate-all.sh output.json README.md
 ## Cost Considerations
 
 **Claude API Usage:**
-- Model: `claude-3-5-sonnet-20241022`
+- Model: `claude-sonnet-4-5-20250929`
 - Each extraction uses ~16K max tokens
 - Cost depends on PDF size and complexity
 - Typical cost per extraction: $0.50-$2.00
