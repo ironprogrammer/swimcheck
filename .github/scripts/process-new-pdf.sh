@@ -7,6 +7,11 @@
 #
 # Environment Variables Required:
 #   GITHUB_TOKEN - GitHub token for creating PRs (provided by GitHub Actions)
+#
+# Behavior:
+#   - If a branch for this year range already exists, the script will fail
+#   - This prevents redundant processing while a PR is under review
+#   - Review and merge existing PRs before the next scheduled run
 
 set -e  # Exit on error
 
@@ -36,21 +41,47 @@ echo ""
 YEAR_RANGE=$(echo "$LINK_TEXT" | grep -oE '[0-9]{4}-[0-9]{4}' || echo "unknown")
 BRANCH_NAME="update-time-standards-${YEAR_RANGE}"
 
-echo "Step 1: Creating branch..."
+echo "Step 1: Checking for existing branch/PR..."
 cd "$PROJECT_ROOT"
 
 # Configure git for GitHub Actions
 git config user.name "github-actions[bot]"
 git config user.email "github-actions[bot]@users.noreply.github.com"
 
-# Create and checkout new branch
-if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1; then
-  echo "Branch $BRANCH_NAME already exists, using it..."
-  git checkout "$BRANCH_NAME"
-else
-  echo "Creating new branch $BRANCH_NAME..."
-  git checkout -b "$BRANCH_NAME"
+# Fetch remote branches to check for existing branch
+git fetch origin
+
+# Check if branch already exists (locally or remotely)
+if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1 || git rev-parse --verify "origin/$BRANCH_NAME" >/dev/null 2>&1; then
+  echo "========================================"
+  echo "Branch $BRANCH_NAME already exists!"
+  echo "========================================"
+
+  # Check if there's an open PR for this branch
+  PR_INFO=$(gh pr list --head "$BRANCH_NAME" --state open --json number,url 2>&1)
+
+  if echo "$PR_INFO" | grep -q '"number"'; then
+    PR_NUMBER=$(echo "$PR_INFO" | grep -o '"number":[0-9]*' | cut -d':' -f2)
+    PR_URL=$(echo "$PR_INFO" | grep -o '"url":"[^"]*"' | cut -d'"' -f4)
+
+    echo "An open pull request already exists for this update:"
+    echo "  PR #$PR_NUMBER: $PR_URL"
+    echo ""
+    echo "Please review and merge the existing PR before running again."
+    echo "This prevents redundant processing of the same PDF update."
+    echo "========================================"
+    exit 1
+  else
+    echo "The branch exists but no open PR was found."
+    echo "Please manually clean up the branch or merge/close any existing PR."
+    echo "========================================"
+    exit 1
+  fi
 fi
+
+# Create new branch
+echo "Creating new branch $BRANCH_NAME..."
+git checkout -b "$BRANCH_NAME"
 echo ""
 
 # Step 2: Extract data from PDF
