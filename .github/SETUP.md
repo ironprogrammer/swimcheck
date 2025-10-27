@@ -1,45 +1,20 @@
 # PDF Extraction Workflow Setup
 
-This document describes how to set up the automated PDF extraction workflow that uses Claude API to extract swim time standards from PDF files.
+This document describes how to set up the automated PDF extraction workflow that uses pdfplumber to extract swim time standards from PDF files.
 
 ## Overview
 
 The workflow automatically:
 1. Checks daily for new OSI Time Standards PDFs
-2. When detected, extracts data using Claude API
+2. When detected, extracts data using pdfplumber
 3. Validates the extracted data
 4. Creates a pull request for review
 
 ## Prerequisites
 
 - GitHub repository with Actions enabled
-- Anthropic Claude Pro subscription (or API access)
 - GitHub CLI (`gh`) configured in the repository
-
-## Required Secrets
-
-You need to configure one secret in your GitHub repository:
-
-### `ANTHROPIC_API_KEY`
-
-Your Anthropic API key for accessing Claude.
-
-**To get your API key:**
-
-1. Go to https://console.anthropic.com/
-2. Sign in with your Anthropic account (Claude Pro subscription)
-3. Navigate to "API Keys" section
-4. Create a new API key or use an existing one
-5. Copy the API key (it starts with `sk-ant-`)
-
-**To add the secret to GitHub:**
-
-1. Go to your GitHub repository
-2. Click **Settings** → **Secrets and variables** → **Actions**
-3. Click **New repository secret**
-4. Name: `ANTHROPIC_API_KEY`
-5. Value: Paste your API key
-6. Click **Add secret**
+- Python 3.x with pdfplumber library (automatically installed in workflow)
 
 ## Workflow Configuration
 
@@ -67,11 +42,12 @@ Checks the OSI website for:
 
 If changes detected, outputs `PDF_URL` and `LINK_TEXT` for next steps.
 
-### 2. PDF Extraction (`.github/scripts/extract-pdf-with-claude.js`)
+### 2. PDF Extraction (`.github/scripts/extract-pdf-with-pdfplumber.py`)
 
-Uses Claude API to:
+Uses pdfplumber library to:
 - Download the PDF
-- Extract time standards data
+- Extract table data from each page
+- Parse time standards data
 - Convert to JSON matching `swim_time_standards.json` structure
 
 ### 3. Validation (`.github/scripts/validate-all.sh`)
@@ -109,9 +85,11 @@ Run the test suite to verify validation logic:
 To test extraction with a PDF URL:
 
 ```bash
-export ANTHROPIC_API_KEY="your-api-key-here"
+# Install pdfplumber if not already installed
+pip install pdfplumber
 
-node .github/scripts/extract-pdf-with-claude.js \
+# Run extraction
+python3 .github/scripts/extract-pdf-with-pdfplumber.py \
   "https://example.com/path/to/standards.pdf" \
   "2024-2025 OSI Time Standards" \
   "output.json"
@@ -122,29 +100,27 @@ bash .github/scripts/validate-all.sh output.json README.md
 
 ## Cost Considerations
 
-**Claude API Usage:**
-- Model: `claude-sonnet-4-5-20250929`
-- Each extraction uses ~50K max tokens (output JSON is ~37K tokens)
-- Cost depends on PDF size and complexity
-- Typical cost per extraction: $1.00-$3.00
+**pdfplumber Extraction:**
+- No API costs - completely free
+- Runs locally in GitHub Actions
+- Fast execution (typically under 10 seconds)
 
 **Recommendations:**
-- Keep daily checks enabled (doesn't use API unless changes detected)
+- Keep daily checks enabled (only processes when changes detected)
 - Review PRs promptly to avoid duplicate processing
-- Monitor API usage in Anthropic Console
 
 ## Troubleshooting
 
-### Workflow fails with "ANTHROPIC_API_KEY not found"
+### Workflow fails with "pdfplumber not found" or import error
 
-**Solution:** Verify the secret is configured correctly in GitHub Settings → Secrets and variables → Actions.
+**Solution:** This should not happen as pdfplumber is installed in the workflow. Check that the `pip install pdfplumber` step completed successfully in the workflow logs.
 
 ### Extraction produces invalid JSON
 
 **Solution:**
 1. Check the extracted JSON structure
-2. Review Claude's output in workflow logs
-3. May need to adjust prompt in `extract-pdf-with-claude.js`
+2. Review pdfplumber's output in workflow logs
+3. The PDF structure may have changed - may need to adjust parsing logic in `extract-pdf-with-pdfplumber.py`
 
 ### Validation flags too many issues
 
@@ -165,20 +141,20 @@ bash .github/scripts/validate-all.sh output.json README.md
 ```
 .github/
 ├── scripts/
-│   ├── check-for-new-pdf.js         # Detects new PDFs
-│   ├── extract-pdf-with-claude.js   # Claude API extraction
-│   ├── validate-json-structure.js   # Structure validator
-│   ├── validate-time-format.js      # Time format validator
-│   ├── validate-time-progression.js # Progression validator
-│   ├── validate-all.sh              # Runs all validators
-│   ├── update-readme-inconsistencies.js # Updates README
-│   └── process-new-pdf.sh           # Main orchestration
+│   ├── check-for-new-pdf.js              # Detects new PDFs
+│   ├── extract-pdf-with-pdfplumber.py    # pdfplumber extraction
+│   ├── validate-json-structure.js        # Structure validator
+│   ├── validate-time-format.js           # Time format validator
+│   ├── validate-time-progression.js      # Progression validator
+│   ├── validate-all.sh                   # Runs all validators
+│   ├── update-readme-inconsistencies.js  # Updates README
+│   └── process-new-pdf.sh                # Main orchestration
 └── workflows/
-    └── check-pdf.yml                # GitHub Actions workflow
+    └── check-pdf.yml                     # GitHub Actions workflow
 
 tests/
-├── test-validation.sh               # Validation test suite
-└── test-pdf-checker.sh              # PDF checker tests
+├── test-validation.sh                    # Validation test suite
+└── test-pdf-checker.sh                   # PDF checker tests
 ```
 
 ## Support
@@ -188,6 +164,6 @@ For issues with the workflow:
 2. Review error messages from validation scripts
 3. Open an issue in the repository
 
-For Claude API issues:
-- Check Anthropic Console: https://console.anthropic.com/
-- Review API documentation: https://docs.anthropic.com/
+For pdfplumber library issues:
+- Check pdfplumber documentation: https://github.com/jsvine/pdfplumber
+- Review Python error messages in workflow logs
