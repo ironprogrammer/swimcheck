@@ -59,11 +59,12 @@ jobs:
           echo "=========================================="
 
       # This step only runs if changes were detected
-      - name: Process new PDF with Claude
+      - name: Process new PDF with pdfplumber
         if: steps.evaluate.outputs.changes_detected == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
+          pip install pdfplumber
           echo "=========================================="
           echo "CHANGES DETECTED - Processing PDF"
           echo "=========================================="
