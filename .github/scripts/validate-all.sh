@@ -33,7 +33,10 @@ FORMAT_OUTPUT=$(node "$SCRIPT_DIR/validate-time-format.js" "$JSON_FILE")
 echo "$FORMAT_OUTPUT"
 
 # Extract JSON issues from output
-FORMAT_ISSUES=$(echo "$FORMAT_OUTPUT" | grep "JSON_ISSUES=" | sed 's/JSON_ISSUES=//' || echo "[]")
+FORMAT_ISSUES=$(echo "$FORMAT_OUTPUT" | grep "JSON_ISSUES=" | sed 's/JSON_ISSUES=//')
+if [ -z "$FORMAT_ISSUES" ]; then
+  FORMAT_ISSUES="[]"
+fi
 echo ""
 
 # 3. Validate time progressions (modifies JSON, adds ⚠️ to progression issues)
@@ -42,7 +45,10 @@ PROGRESSION_OUTPUT=$(node "$SCRIPT_DIR/validate-time-progression.js" "$JSON_FILE
 echo "$PROGRESSION_OUTPUT"
 
 # Extract JSON issues from output
-PROGRESSION_ISSUES=$(echo "$PROGRESSION_OUTPUT" | grep "JSON_ISSUES=" | sed 's/JSON_ISSUES=//' || echo "[]")
+PROGRESSION_ISSUES=$(echo "$PROGRESSION_OUTPUT" | grep "JSON_ISSUES=" | sed 's/JSON_ISSUES=//')
+if [ -z "$PROGRESSION_ISSUES" ]; then
+  PROGRESSION_ISSUES="[]"
+fi
 echo ""
 
 # 4. Combine all issues and update README
