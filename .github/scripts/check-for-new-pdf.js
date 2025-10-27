@@ -177,6 +177,13 @@ function checkForNewPDF(html, currentData) {
     console.log('Status: SUCCESS - Change detected');
     console.log('Action: Continuing to next steps...');
     console.log('='.repeat(60));
+
+    // Output for GitHub Actions
+    console.log();
+    console.log('GITHUB_OUTPUT:');
+    console.log(`PDF_URL=${changeDetails.href}`);
+    console.log(`LINK_TEXT=${changeDetails.text}`);
+
     return {
       changed: true,
       type: changeType,
