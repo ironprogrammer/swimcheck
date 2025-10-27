@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swim Check - Motivational Time Tracker</title>
+    <title>Swim Check - OSI Motivational Times Lookup</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <style>
         /* Custom styles */
@@ -212,6 +212,7 @@
     <main class="container">
         <div class="app-header">
             <h1>Swim Check 🏊</h1>
+            <h4>Motivational Times Lookup</h4>
             <p class="season-info" id="seasonInfo">Loading...</p>
         </div>
 
@@ -247,6 +248,13 @@
 
         <!-- Clear Times Section -->
         <section class="clear-section">
+            <p class="note-text" style="margin-bottom: 1rem;">
+                💡 Tip: Rotate your phone to landscape view for better table visibility.
+            </p>
+            <p class="note-text" style="margin-bottom: 1rem;">
+                Times marked with ⚠️ indicate source data issues or unexpected time progressions
+                (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">more details on GitHub</a>).
+            </p>
             <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
         </section>
 
@@ -271,11 +279,11 @@
         <footer class="app-footer">
             <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
             <div class="footer-support">
-                <p>Do you find Swim Check useful?<br>Consider <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">contributing on GitHub</a> or buying me a coffee!</p>
+                <p><strong>Do you find Swim Check useful?</strong><br>Consider <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">contributing on GitHub</a> or buying me a coffee! (aka helping pay for meet fees)</p>
             </div>
             <div class="footer-buttons">
-                <iframe src="https://ghbtns.com/github-btn.html?user=ironprogrammer&repo=swimcheck&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
                 <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;"></a>
+                <iframe src="https://ghbtns.com/github-btn.html?user=ironprogrammer&repo=swimcheck&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
             </div>
         </footer>
     </main>
@@ -703,7 +711,7 @@
             const phrases = [
                 'Made with <span class="heart">❤️</span> in war-torn PDX',
                 'Made with <span class="heart">❤️</span> while PDX is aflame',
-                'Built with <span class="heart">❤️</span> and the bravery to venture into PDX streets',
+                'Built with <span class="heart">❤️</span> and the bravery to venture into the rough streets of PDX',
                 'Made with <span class="heart">❤️</span> between pickleball games in war-ravaged PDX',
                 'Crafted with <span class="heart">❤️</span> from the front lines of PDX',
                 'Freshly brewed with <span class="heart">❤️</span> and Courier Coffee',
