@@ -6,7 +6,7 @@
 # Usage: process-new-pdf.sh <pdf-url> <link-text>
 #
 # Environment Variables Required:
-#   GITHUB_TOKEN - GitHub token for creating PRs (provided by GitHub Actions)
+#   GH_TOKEN - GitHub token for creating PRs (provided by GitHub Actions)
 #
 # Behavior:
 #   - If a branch for this year range already exists, the script will fail

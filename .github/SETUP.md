@@ -16,6 +16,15 @@ The workflow automatically:
 - GitHub CLI (`gh`) configured in the repository
 - Python 3.x with pdfplumber library (automatically installed in workflow)
 
+## Required Repository Settings
+
+For the workflow to create pull requests, you must enable the following setting:
+
+1. Go to: **Settings → Actions → General → Workflow permissions**
+2. Enable: **"Allow GitHub Actions to create and approve pull requests"**
+
+This allows the workflow's `GH_TOKEN` to create PRs when new PDFs are detected.
+
 ## Workflow Configuration
 
 The workflow is configured in `.github/workflows/check-pdf.yml` and runs:

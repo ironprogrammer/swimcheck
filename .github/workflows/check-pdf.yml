@@ -65,6 +65,8 @@ jobs:
       # This step only runs if changes were detected
       - name: Process new PDF with pdfplumber
         if: steps.evaluate.outputs.changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           pip install pdfplumber
           echo "=========================================="
