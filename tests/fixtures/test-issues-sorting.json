@@ -1,0 +1,119 @@
+[
+  {
+    "age": "14",
+    "gender": "Boys",
+    "event": "1500 Free",
+    "course": "LCM",
+    "standard": "B",
+    "value": "22:62.29⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "15 & Over*",
+    "gender": "Girls",
+    "event": "200 Free",
+    "course": "SCY",
+    "standard": "A",
+    "value": "2:00.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "11-12",
+    "gender": "Girls",
+    "event": "200 F.R.",
+    "course": "SCY",
+    "standard": "A",
+    "value": "2:00.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "10",
+    "gender": "Girls",
+    "event": "100 Fly",
+    "course": "LCM",
+    "standard": "B+",
+    "value": "125:79.19⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "9",
+    "gender": "Girls",
+    "event": "100 Breast",
+    "course": "LCM",
+    "standard": "A",
+    "value": "1:96.99⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "13",
+    "gender": "Girls",
+    "event": "200 Breast",
+    "course": "SCM",
+    "standard": "B",
+    "value": "2:51.89⚠️",
+    "issue": "Invalid progression"
+  },
+  {
+    "age": "14",
+    "gender": "Girls",
+    "event": "200 IM",
+    "course": "SCM",
+    "standard": "B",
+    "value": "2:97.49⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "14",
+    "gender": "Boys",
+    "event": "800 Free",
+    "course": "LCM",
+    "standard": "B",
+    "value": "11:82.09⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "8 & Under",
+    "gender": "Girls",
+    "event": "25 Free",
+    "course": "SCY",
+    "standard": "A",
+    "value": "18.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "12",
+    "gender": "Girls",
+    "event": "100 Free",
+    "course": "SCY",
+    "standard": "A",
+    "value": "1:00.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "11",
+    "gender": "Girls",
+    "event": "50 Free",
+    "course": "SCY",
+    "standard": "A",
+    "value": "30.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "13-14",
+    "gender": "Girls",
+    "event": "200 F.R.",
+    "course": "SCY",
+    "standard": "A",
+    "value": "1:50.00⚠️",
+    "issue": "Invalid format"
+  },
+  {
+    "age": "10 & Under",
+    "gender": "Girls",
+    "event": "100 IM",
+    "course": "SCY",
+    "standard": "A",
+    "value": "1:20.00⚠️",
+    "issue": "Invalid format"
+  }
+]

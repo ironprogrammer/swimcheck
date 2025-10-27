@@ -35,6 +35,53 @@ function formatAgeGender(age, gender) {
 }
 
 /**
+ * Extract numeric value from age string for sorting
+ * Examples: "9" -> 9, "8 & Under" -> 8, "11-12" -> 11, "15 & Over*" -> 15
+ */
+function getAgeNumericValue(age) {
+  const match = age.match(/(\d+)/);
+  return match ? parseInt(match[1]) : 999;
+}
+
+/**
+ * Check if age is a range (contains hyphen)
+ * Ranges should sort after single ages with the same starting number
+ */
+function isAgeRange(age) {
+  return age.includes('-');
+}
+
+/**
+ * Get the ending number for a range, or the starting number for non-ranges
+ * Used as secondary sort key to properly order: 11, 12, 11-12
+ */
+function getAgeEndValue(age) {
+  if (isAgeRange(age)) {
+    const matches = age.match(/(\d+)-(\d+)/);
+    return matches ? parseInt(matches[2]) : 999;
+  }
+  return getAgeNumericValue(age);
+}
+
+/**
+ * Get sort order for course (SCY, SCM, LCM)
+ */
+function getCourseSortOrder(course) {
+  const courseOrder = ['SCY', 'SCM', 'LCM'];
+  const index = courseOrder.indexOf(course);
+  return index === -1 ? 999 : index;
+}
+
+/**
+ * Get sort order for standards (A, B+, B)
+ */
+function getStandardSortOrder(standard) {
+  const standardOrder = ['A', 'B+', 'B'];
+  const index = standardOrder.indexOf(standard);
+  return index === -1 ? 999 : index;
+}
+
+/**
  * Generate markdown table from issues
  */
 function generateTable(issues) {
@@ -42,13 +89,35 @@ function generateTable(issues) {
     return '*(No inconsistencies found in current data)*';
   }
 
-  // Sort issues by age, gender, event, course, standard
+  // Sort issues by age (numeric), gender (Girls before Boys), event, course, standard
   const sortedIssues = issues.sort((a, b) => {
-    if (a.age !== b.age) return a.age.localeCompare(b.age);
-    if (a.gender !== b.gender) return a.gender.localeCompare(b.gender);
+    // For ranges, sort by end value; for singles, sort by start value
+    // This ensures: 11, 12, 11-12 (not 11, 11-12, 12)
+    const aSortValue = isAgeRange(a.age) ? getAgeEndValue(a.age) : getAgeNumericValue(a.age);
+    const bSortValue = isAgeRange(b.age) ? getAgeEndValue(b.age) : getAgeNumericValue(b.age);
+    const ageCompare = aSortValue - bSortValue;
+    if (ageCompare !== 0) return ageCompare;
+
+    // If ages have same sort value, single ages come before ranges
+    // Example: 12 (single) comes before 11-12 (range, also sorts at 12)
+    if (isAgeRange(a.age) !== isAgeRange(b.age)) {
+      return isAgeRange(a.age) ? 1 : -1;
+    }
+
+    // Sort by gender (Girls before Boys)
+    if (a.gender !== b.gender) {
+      return a.gender === 'Girls' ? -1 : 1;
+    }
+
+    // Sort by event name
     if (a.event !== b.event) return a.event.localeCompare(b.event);
-    if (a.course !== b.course) return a.course.localeCompare(b.course);
-    return a.standard.localeCompare(b.standard);
+
+    // Sort by course (SCY, SCM, LCM)
+    const courseCompare = getCourseSortOrder(a.course) - getCourseSortOrder(b.course);
+    if (courseCompare !== 0) return courseCompare;
+
+    // Sort by standard (A, B+, B)
+    return getStandardSortOrder(a.standard) - getStandardSortOrder(b.standard);
   });
 
   const lines = [];
