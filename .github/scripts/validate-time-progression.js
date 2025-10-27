@@ -61,6 +61,14 @@ function timeTocentiseconds(timeStr) {
  * @returns {object} { valid: boolean, issue: string|null }
  */
 function validateProgression(timeA, timeBPlus, timeB) {
+  // If any time has a warning emoji (from format validation), skip progression check
+  // This avoids false positives when comparing against invalid times
+  if ((timeA && timeA.includes(WARNING_EMOJI)) ||
+      (timeBPlus && timeBPlus.includes(WARNING_EMOJI)) ||
+      (timeB && timeB.includes(WARNING_EMOJI))) {
+    return { valid: true, issue: null };
+  }
+
   const csA = timeTocentiseconds(timeA);
   const csBPlus = timeTocentiseconds(timeBPlus);
   const csB = timeTocentiseconds(timeB);

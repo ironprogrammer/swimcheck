@@ -244,6 +244,58 @@ test_progression_valid() {
   rm -f "$SCRIPT_DIR/test-valid-temp.json"
 }
 
+# Test 7: Progression validation skips when format is invalid
+test_progression_skips_invalid_format() {
+  info "Test: Progression validation skips times with invalid format"
+
+  # Create test data with invalid format that would trigger false positive
+  cat > "$SCRIPT_DIR/test-skip-progression.json" <<'EOF'
+{
+  "title": "2024-2025 Test Standards",
+  "sourceUrl": "https://example.com/test.pdf",
+  "generatedOn": "2025-10-26",
+  "ageGroups": [
+    {
+      "age": "10",
+      "genders": {
+        "Girls": {
+          "events": [
+            {
+              "name": "100 Free",
+              "SCY": { "A": "1:96.00⚠️", "B+": "1:10.00", "B": "1:12.00" },
+              "SCM": { "A": null, "B+": null, "B": null },
+              "LCM": { "A": null, "B+": null, "B": null }
+            }
+          ]
+        },
+        "Boys": {
+          "events": []
+        }
+      }
+    }
+  ]
+}
+EOF
+
+  OUTPUT=$(node "$VALIDATORS_DIR/validate-time-progression.js" "$SCRIPT_DIR/test-skip-progression.json" 2>&1)
+
+  # Should NOT report progression issues because A has warning emoji
+  if echo "$OUTPUT" | grep -q "All time progressions are valid"; then
+    pass "Progression check skipped for times with invalid format"
+  else
+    fail "Progression check not skipped (false positive detected)"
+  fi
+
+  # B+ should NOT get a progression warning emoji added
+  if grep -q '"B+": "1:10.00⚠️"' "$SCRIPT_DIR/test-skip-progression.json"; then
+    fail "Warning emoji incorrectly added to B+ time"
+  else
+    pass "No progression warning added when format is invalid"
+  fi
+
+  rm -f "$SCRIPT_DIR/test-skip-progression.json"
+}
+
 # Main test runner
 echo "========================================"
 echo "Validation Scripts Test Suite"
@@ -258,6 +310,7 @@ test_time_format_invalid
 test_time_format_valid
 test_progression_invalid
 test_progression_valid
+test_progression_skips_invalid_format
 
 cleanup_test_data
 
