@@ -2,6 +2,8 @@
 
 A mobile-first single-page app for tracking swim times against [Oregon Swimming (OSI)](https://www.oregonswimming.org) motivational time standards.
 
+Not in Oregon and want to see your state's motivational data? [Start a discussion](https://github.com/ironprogrammer/swimcheck/discussions/6) or [drop me a line](https://brianalexander.com) and let's talk!
+
 ## Do you find this app useful?
 
 Please consider helping me cover my kid's swim meet fees!
@@ -10,7 +12,7 @@ Please consider helping me cover my kid's swim meet fees!
 
 ## Data Inconsistencies ⚠️
 
-The following issues were observed in the source data from the OSI site, and are highlighted in the app:
+The following issues were observed in the source data from the OSI site\*, and are highlighted in the app:
 
 | Age/Gender | Event      | Course | Standard | Value       | Issue              |
 | ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
@@ -21,9 +23,13 @@ The following issues were observed in the source data from the OSI site, and are
 | Boys 14 | 1500 Free | LCM | B | `22:62.29⚠️` | Invalid format |
 | Boys 14 | 800 Free | LCM | B | `11:82.09⚠️` | Invalid format |
 
-\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
+### Issue Key
+- **Invalid format**: The time does not match the pattern `MM:SS.MS` or `SS.MS`, or exceed 60-second increment notation (e.g. `96.99` seconds).
+- **Invalid progression**: The time does not fit in the expected "faster to slower" time progression for standards: `A < B+ < B`.
 
 > 🪲 Encounter any other issues? Head over to the [Issues tab](https://github.com/ironprogrammer/swimcheck/issues) and let me know!
+
+\* *Note that the OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections related to time standards.*
 
 ## Features
 
