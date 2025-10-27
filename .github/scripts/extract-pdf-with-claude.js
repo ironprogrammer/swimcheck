@@ -130,7 +130,7 @@ Extract the data now and return the complete JSON object:`;
 
   const requestBody = {
     model: MODEL,
-    max_tokens: 16000,
+    max_tokens: 32000,
     messages: [
       {
         role: 'user',
@@ -202,8 +202,19 @@ Extract the data now and return the complete JSON object:`;
             jsonText = jsonText.replace(/^```\s*/, '').replace(/\s*```$/, '');
           }
 
-          const extractedData = JSON.parse(jsonText);
-          resolve(extractedData);
+          try {
+            const extractedData = JSON.parse(jsonText);
+            resolve(extractedData);
+          } catch (parseError) {
+            // If JSON parsing fails, save the raw response for debugging
+            const debugFile = 'claude-response-debug.txt';
+            fs.writeFileSync(debugFile, extractedText, 'utf8');
+            reject(new Error(
+              `Failed to parse JSON: ${parseError.message}\n` +
+              `Raw response saved to ${debugFile} for debugging.\n` +
+              `Response length: ${extractedText.length} characters`
+            ));
+          }
 
         } catch (error) {
           reject(new Error(`Failed to parse API response: ${error.message}`));
