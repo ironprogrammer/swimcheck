@@ -171,13 +171,17 @@ function validateProgression(timeA, timeBPlus, timeB) {
   const expectedBStr = secondsToTimeString(expectedB);
 
   // Allow tiny floating point tolerance (0.005 seconds = 0.5 centiseconds)
-  if (Math.abs(secB - expectedB) > 0.005) {
+  const bIsIncorrect = Math.abs(secB - expectedB) > 0.005;
+  if (bIsIncorrect) {
     invalidStandards.push('B');
     issues.push(`B should be ${expectedBStr} (A × 1.1, rounded to 1 decimal + 0.09)`);
   }
 
-  // Calculate expected B+ from A and B
-  const expectedBPlus = calculateExpectedBPlus(secA, secB);
+  // Calculate expected B+ from A and corrected B (not the actual B from PDF)
+  // This way, if B is wrong but B+ is correct relative to what B should be,
+  // we won't flag B+ as an error
+  const bTimeForBPlusCalculation = bIsIncorrect ? expectedB : secB;
+  const expectedBPlus = calculateExpectedBPlus(secA, bTimeForBPlusCalculation);
   const expectedBPlusStr = secondsToTimeString(expectedBPlus);
 
   if (Math.abs(secBPlus - expectedBPlus) > 0.005) {

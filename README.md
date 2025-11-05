@@ -25,7 +25,7 @@ The following issues were observed in the source data from the OSI site\*, and a
 
 ### Issue Key
 - **Invalid format**: The time does not match the pattern `MM:SS.MS` or `SS.MS`, or exceed 60-second increment notation (e.g. `96.99` seconds).
-- **Invalid progression**: The time does not fit in the expected "faster to slower" time progression for standards: `A < B+ < B`.
+- **Invalid progression**: The time does not fit in the expected "faster to slower" time progression calculation for standards: `A < B+ < B`.
 
 > 🪲 Encounter any other issues? Head over to the [Issues tab](https://github.com/ironprogrammer/swimcheck/issues) and let me know!
 

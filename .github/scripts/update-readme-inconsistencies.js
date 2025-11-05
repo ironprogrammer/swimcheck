@@ -154,7 +154,7 @@ function updateReadme(readmePath, issues) {
 
   // Extract the part after the section header and before the table
   // This includes the intro text
-  const beforeTable = 'The following issues were observed in the source data from the OSI site, and are highlighted in the app:\n\n';
+  const beforeTable = 'The following issues were observed in the source data from the OSI site\\*, and are highlighted in the app:\n\n';
 
   // Generate new table
   const newTable = generateTable(issues);
