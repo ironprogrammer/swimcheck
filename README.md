@@ -12,16 +12,11 @@ Please consider helping me cover my kid's swim meet fees!
 
 ## Data Inconsistencies ⚠️
 
-The following issues were observed in the source data from the OSI site\*, and are highlighted in the app:
+The following issues were observed in the source data from the OSI site, and are highlighted in the app:
 
 | Age/Gender | Event      | Course | Standard | Value       | Issue              |
 | ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
-| Girls 9 | 100 Breast | LCM | A | `1:96.99⚠️` | Invalid format |
-| Girls 10 | 100 Fly | LCM | B+ | `125:79.19⚠️` | Invalid format |
-| Girls 13 | 200 Breast | SCM | B | `2:51.89⚠️` | Invalid progression |
-| Girls 14 | 200 IM | SCM | B | `2:97.49⚠️` | Invalid format |
-| Boys 14 | 1500 Free | LCM | B | `22:62.29⚠️` | Invalid format |
-| Boys 14 | 800 Free | LCM | B | `11:82.09⚠️` | Invalid format |
+| Boys 14 | 200 Free | SCY | B+ | `2:05.49⚠️` | Invalid progression |
 
 ### Issue Key
 - **Invalid format**: The time does not match the pattern `MM:SS.MS` or `SS.MS`, or exceed 60-second increment notation (e.g. `96.99` seconds).
