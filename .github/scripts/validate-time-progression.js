@@ -56,9 +56,94 @@ function timeTocentiseconds(timeStr) {
 }
 
 /**
- * Check if time progression is valid (A < B+ < B)
+ * Convert time string to total seconds (as decimal)
+ * Handles MM:SS.MS or SS.MS format
  *
- * @returns {object} { valid: boolean, issue: string|null }
+ * @returns {number|null} Total seconds as decimal, or null if invalid/null
+ */
+function timeToSeconds(timeStr) {
+  if (!timeStr) return null;
+
+  // Strip any warning emoji before parsing
+  const cleanTime = stripWarning(timeStr);
+
+  // Try MM:SS.MS format
+  let match = cleanTime.match(/^(\d+):(\d{2})\.(\d{2})$/);
+  if (match) {
+    const minutes = parseInt(match[1]);
+    const seconds = parseInt(match[2]);
+    const centiseconds = parseInt(match[3]);
+    return minutes * 60 + seconds + centiseconds / 100;
+  }
+
+  // Try SS.MS format
+  match = cleanTime.match(/^(\d{1,2})\.(\d{2})$/);
+  if (match) {
+    const seconds = parseInt(match[1]);
+    const centiseconds = parseInt(match[2]);
+    return seconds + centiseconds / 100;
+  }
+
+  // Invalid format
+  return null;
+}
+
+/**
+ * Format seconds back to time string
+ * @returns {string} Formatted time as MM:SS.MS or SS.MS
+ */
+function secondsToTimeString(totalSeconds) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  // Round to 2 decimal places to avoid floating point issues
+  const secondsRounded = Math.round(seconds * 100) / 100;
+  const wholeSeconds = Math.floor(secondsRounded);
+  const centiseconds = Math.round((secondsRounded - wholeSeconds) * 100);
+
+  if (minutes > 0) {
+    return `${minutes}:${wholeSeconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
+  } else {
+    return `${wholeSeconds}.${centiseconds.toString().padStart(2, '0')}`;
+  }
+}
+
+/**
+ * Calculate expected B time from A time using OSI formula:
+ * B = round(A * 1.1, 1 decimal) + 0.09
+ *
+ * @param {number} timeA - A time in seconds
+ * @returns {number} Expected B time in seconds
+ */
+function calculateExpectedB(timeA) {
+  const bCalculated = timeA * 1.1;
+  // Drop all but first decimal, then add 0.09
+  const bRounded = Math.floor(bCalculated * 10) / 10;
+  return bRounded + 0.09;
+}
+
+/**
+ * Calculate expected B+ time from A and B times using OSI formula:
+ * B+ = round((A + B) / 2, 1 decimal) + 0.09
+ *
+ * @param {number} timeA - A time in seconds
+ * @param {number} timeB - B time in seconds
+ * @returns {number} Expected B+ time in seconds
+ */
+function calculateExpectedBPlus(timeA, timeB) {
+  const bPlusCalculated = (timeA + timeB) / 2;
+  // Drop all but first decimal, then add 0.09
+  const bPlusRounded = Math.floor(bPlusCalculated * 10) / 10;
+  return bPlusRounded + 0.09;
+}
+
+/**
+ * Check if time progression is valid using OSI formula
+ * A times are set each year
+ * B = round(A * 1.1, 1 decimal) + 0.09
+ * B+ = round((A + B) / 2, 1 decimal) + 0.09
+ *
+ * @returns {object} { valid: boolean, invalidStandards: string[], issues: string[] }
  */
 function validateProgression(timeA, timeBPlus, timeB) {
   // If any time has a warning emoji (from format validation), skip progression check
@@ -66,28 +151,45 @@ function validateProgression(timeA, timeBPlus, timeB) {
   if ((timeA && timeA.includes(WARNING_EMOJI)) ||
       (timeBPlus && timeBPlus.includes(WARNING_EMOJI)) ||
       (timeB && timeB.includes(WARNING_EMOJI))) {
-    return { valid: true, issue: null };
+    return { valid: true, invalidStandards: [], issues: [] };
   }
 
-  const csA = timeTocentiseconds(timeA);
-  const csBPlus = timeTocentiseconds(timeBPlus);
-  const csB = timeTocentiseconds(timeB);
+  const secA = timeToSeconds(timeA);
+  const secBPlus = timeToSeconds(timeBPlus);
+  const secB = timeToSeconds(timeB);
 
   // If any time is null or invalid format, skip progression check
-  if (csA === null || csBPlus === null || csB === null) {
-    return { valid: true, issue: null };
+  if (secA === null || secBPlus === null || secB === null) {
+    return { valid: true, invalidStandards: [], issues: [] };
   }
 
-  // A should be fastest (smallest), then B+, then B
-  if (csA >= csBPlus) {
-    return { valid: false, issue: 'Invalid progression' };
+  const invalidStandards = [];
+  const issues = [];
+
+  // Calculate expected B from A
+  const expectedB = calculateExpectedB(secA);
+  const expectedBStr = secondsToTimeString(expectedB);
+
+  // Allow tiny floating point tolerance (0.005 seconds = 0.5 centiseconds)
+  if (Math.abs(secB - expectedB) > 0.005) {
+    invalidStandards.push('B');
+    issues.push(`B should be ${expectedBStr} (A × 1.1, rounded to 1 decimal + 0.09)`);
   }
 
-  if (csBPlus >= csB) {
-    return { valid: false, issue: 'Invalid progression' };
+  // Calculate expected B+ from A and B
+  const expectedBPlus = calculateExpectedBPlus(secA, secB);
+  const expectedBPlusStr = secondsToTimeString(expectedBPlus);
+
+  if (Math.abs(secBPlus - expectedBPlus) > 0.005) {
+    invalidStandards.push('B+');
+    issues.push(`B+ should be ${expectedBPlusStr} ((A + B) / 2, rounded to 1 decimal + 0.09)`);
   }
 
-  return { valid: true, issue: null };
+  return {
+    valid: invalidStandards.length === 0,
+    invalidStandards,
+    issues
+  };
 }
 
 /**
@@ -122,46 +224,23 @@ function processTimeStandards(data) {
           const validation = validateProgression(timeA, timeBPlus, timeB);
 
           if (!validation.valid) {
-            // Flag the B time as the issue (it's the slowest and should be largest)
-            // But we need to identify which specific time(s) break the progression
-            const csA = timeTocentiseconds(timeA);
-            const csBPlus = timeTocentiseconds(timeBPlus);
-            const csB = timeTocentiseconds(timeB);
-
-            // Determine which time(s) to flag
-            // If A >= B+, flag both A and B+
-            // If B+ >= B, flag B (the one that's out of order)
-            if (csA !== null && csBPlus !== null && csA >= csBPlus) {
-              // Flag B+ as it should be slower than A but isn't
-              if (timeBPlus && !timeBPlus.includes(WARNING_EMOJI)) {
-                event[course]['B+'] = timeBPlus + WARNING_EMOJI;
+            // Flag each invalid standard
+            validation.invalidStandards.forEach((standard, idx) => {
+              const currentTime = event[course][standard];
+              if (currentTime && !currentTime.includes(WARNING_EMOJI)) {
+                event[course][standard] = currentTime + WARNING_EMOJI;
               }
+
               issues.push({
                 age,
                 gender,
                 event: eventName,
                 course,
-                standard: 'B+',
-                value: event[course]['B+'],
-                issue: validation.issue
+                standard,
+                value: event[course][standard],
+                issue: validation.issues[idx]
               });
-            }
-
-            if (csBPlus !== null && csB !== null && csBPlus >= csB) {
-              // Flag B as it should be slower than B+ but isn't
-              if (timeB && !timeB.includes(WARNING_EMOJI)) {
-                event[course]['B'] = timeB + WARNING_EMOJI;
-              }
-              issues.push({
-                age,
-                gender,
-                event: eventName,
-                course,
-                standard: 'B',
-                value: event[course]['B'],
-                issue: validation.issue
-              });
-            }
+            });
           }
         });
       });
@@ -220,5 +299,14 @@ function main() {
 if (require.main === module) {
   main();
 } else {
-  module.exports = { validateProgression, timeTocentiseconds, processTimeStandards, stripWarning };
+  module.exports = {
+    validateProgression,
+    timeTocentiseconds,
+    timeToSeconds,
+    secondsToTimeString,
+    calculateExpectedB,
+    calculateExpectedBPlus,
+    processTimeStandards,
+    stripWarning
+  };
 }
