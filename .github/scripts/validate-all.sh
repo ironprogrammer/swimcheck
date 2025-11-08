@@ -51,8 +51,26 @@ if [ -z "$PROGRESSION_ISSUES" ]; then
 fi
 echo ""
 
-# 4. Combine all issues and update README
-echo "Step 4: Updating README with inconsistencies..."
+# 4. Extract title and sourceUrl from JSON
+echo "Step 4: Extracting title and sourceUrl from JSON..."
+JSON_METADATA=$(node -e "
+const fs = require('fs');
+const data = JSON.parse(fs.readFileSync('$JSON_FILE', 'utf8'));
+console.log(JSON.stringify({ title: data.title || '', sourceUrl: data.sourceUrl || '' }));
+")
+TITLE=$(echo "$JSON_METADATA" | node -e "const data = JSON.parse(require('fs').readFileSync(0, 'utf8')); console.log(data.title);")
+SOURCE_URL=$(echo "$JSON_METADATA" | node -e "const data = JSON.parse(require('fs').readFileSync(0, 'utf8')); console.log(data.sourceUrl);")
+echo "Title: $TITLE"
+echo "Source URL: $SOURCE_URL"
+echo ""
+
+# 5. Update README Data Source section
+echo "Step 5: Updating README Data Source section..."
+node "$SCRIPT_DIR/update-readme-data-source.js" "$README_PATH" "$TITLE" "$SOURCE_URL"
+echo ""
+
+# 6. Combine all issues and update README inconsistencies
+echo "Step 6: Updating README inconsistencies table..."
 
 # Merge the two issue arrays using Node.js
 COMBINED_ISSUES=$(node -e "
