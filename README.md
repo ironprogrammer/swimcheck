@@ -10,6 +10,12 @@ Please consider helping me cover my kid's swim meet fees!
 
 <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
+## Data Source
+
+Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards), which are typically updated 1-2 times per year.
+
+**Current standards:** [2025-2026 OSI Time Standards A/B+/B](https://www.oregonswimming.org/wzorlsc/UserFiles/Image/QuickUpload/osi-2025-2026-a-b-b-time-standards_035227.pdf)
+
 ## Data Inconsistencies ⚠️
 
 The following issues were observed in the source data from the OSI site\*, and are highlighted in the app:
@@ -58,10 +64,6 @@ All entered data is automatically saved to your browser's local storage.
 Enter times in the format:
 - `MM:SS.MS` for times over 1 minute (e.g., `1:28.19`)
 - `SS.MS` for times under 1 minute (e.g., `28.45`)
-
-## Data Source
-
-Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards), which are typically updated 1-2 times per year.
 
 ## Development
 
