@@ -493,7 +493,7 @@
                     return;
                 }
 
-                const eventKey = `${appState.ageGroup}_${appState.gender}_${course}_${event.name}`;
+                const eventKey = `${appState.gender}_${course}_${event.name}`;
                 const userTime = appState.times[eventKey] || '';
                 const qualification = userTime ? getQualification(userTime, times) : null;
 
@@ -620,8 +620,8 @@
             }
 
             // Find the event's times
-            const [age, gender, course, eventName] = eventKey.split('_');
-            const ageGroupData = swimData.ageGroups.find(g => g.age === age);
+            const [gender, course, eventName] = eventKey.split('_');
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
             if (!ageGroupData) return;
 
             const event = ageGroupData.genders[gender].events.find(e => e.name === eventName);
