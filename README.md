@@ -14,7 +14,9 @@ Please consider helping me cover my kid's swim meet fees!
 
 Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards), which are typically updated 1-2 times per year.
 
+<!-- AUTO-GENERATED-CURRENT-STANDARDS:START -->
 **Current standards:** [2025-2026 OSI Time Standards A/B+/B](https://www.oregonswimming.org/wzorlsc/UserFiles/Image/QuickUpload/osi-2025-2026-a-b-b-time-standards_035227.pdf)
+<!-- AUTO-GENERATED-CURRENT-STANDARDS:END -->
 
 ## Data Inconsistencies ⚠️
 
