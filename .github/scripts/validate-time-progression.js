@@ -174,7 +174,7 @@ function validateProgression(timeA, timeBPlus, timeB) {
   const bIsIncorrect = Math.abs(secB - expectedB) > 0.005;
   if (bIsIncorrect) {
     invalidStandards.push('B');
-    issues.push(`B should be ${expectedBStr} (A × 1.1, rounded to 1 decimal + 0.09)`);
+    issues.push(`Invalid progression: B should be ${expectedBStr}`);
   }
 
   // Calculate expected B+ from A and corrected B (not the actual B from PDF)
@@ -186,7 +186,7 @@ function validateProgression(timeA, timeBPlus, timeB) {
 
   if (Math.abs(secBPlus - expectedBPlus) > 0.005) {
     invalidStandards.push('B+');
-    issues.push(`B+ should be ${expectedBPlusStr} ((A + B) / 2, rounded to 1 decimal + 0.09)`);
+    issues.push(`Invalid progression: B+ should be ${expectedBPlusStr}`);
   }
 
   return {
