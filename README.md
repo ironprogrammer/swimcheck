@@ -22,6 +22,7 @@ Time standards are sourced from the [Oregon Swimming Time Standards](https://www
 
 The following issues were observed in the source data from the OSI site\*, and are highlighted in the app:
 
+<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->
 | Age/Gender | Event      | Course | Standard | Value       | Issue              |
 | ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
 | Girls 11 | 1500 Free | LCM | B | `24:38.39⚠️` | B should be 24:18.39 (A × 1.1, rounded to 1 decimal + 0.09) |
@@ -29,6 +30,7 @@ The following issues were observed in the source data from the OSI site\*, and a
 | Girls 13 | 1500 Free | LCM | B | `24:38.39⚠️` | B should be 24:18.39 (A × 1.1, rounded to 1 decimal + 0.09) |
 | Boys 14 | 200 Free | SCY | B+ | `2:05.49⚠️` | B+ should be 2:11.79 ((A + B) / 2, rounded to 1 decimal + 0.09) |
 | Boys 15 & Over* | 1500 Free | SCM | B | `21:59.09⚠️` | B should be 21:58.99 (A × 1.1, rounded to 1 decimal + 0.09) |
+<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->
 
 ### Issue Key
 - **Invalid format**: The time does not match the pattern `MM:SS.MS` or `SS.MS`, or exceed 60-second increment notation (e.g. `96.99` seconds).
