@@ -55,6 +55,8 @@ The following issues were observed in the source data from the OSI site\*, and a
 2. Choose **Gender** (Girls/Boys)
 3. Select **Course Type** (SCY/SCM/LCM)
 4. Enter your swim times in the "Your Time" column
+   - Format: `MM:SS.MS` for times over 1 minute (e.g., `1:28.19`)
+   - Format: `SS.MS` for times under 1 minute (e.g., `28.45`)
 5. Times are automatically evaluated and color-coded:
    - **Green**: A time qualified
    - **Blue**: B+ time qualified
@@ -62,12 +64,6 @@ The following issues were observed in the source data from the OSI site\*, and a
    - **Gray**: Did not qualify
 
 All entered data is automatically saved to your browser's local storage.
-
-## Time Format
-
-Enter times in the format:
-- `MM:SS.MS` for times over 1 minute (e.g., `1:28.19`)
-- `SS.MS` for times under 1 minute (e.g., `28.45`)
 
 ## Development
 
