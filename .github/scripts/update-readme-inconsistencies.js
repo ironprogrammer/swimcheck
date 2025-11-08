@@ -2,8 +2,10 @@
 
 /**
  * Updates the README.md "Data Inconsistencies" section with current issues
+ * - Uses HTML comment markers to identify auto-generated content
+ * - Only replaces content between <!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START --> and END markers
+ * - Leaves manually maintained intro paragraph and Issue Key untouched
  * - Takes issues from validation scripts (via JSON input)
- * - Replaces the existing table with current issues
  * - Only shows issues from the most recent validation run
  *
  * Usage:
@@ -139,31 +141,33 @@ function generateTable(issues) {
 }
 
 /**
- * Update README with new inconsistencies section
+ * Update README with new inconsistencies table using HTML comment markers
  */
 function updateReadme(readmePath, issues) {
-  const readmeContent = fs.readFileSync(readmePath, 'utf8');
+  let readmeContent = fs.readFileSync(readmePath, 'utf8');
 
-  // Find the Data Inconsistencies section
-  const sectionRegex = /## Data Inconsistencies ⚠️\n\n([\s\S]*?)\n\n(?=##|\\\*|$)/;
+  // Look for the HTML comment markers
+  const markerRegex = /<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->\n([\s\S]*?)\n<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->/;
 
-  const match = readmeContent.match(sectionRegex);
+  const match = readmeContent.match(markerRegex);
   if (!match) {
-    throw new Error('Could not find "## Data Inconsistencies ⚠️" section in README.md');
+    throw new Error(
+      'Could not find AUTO-GENERATED-INCONSISTENCIES-TABLE markers in README.md.\n' +
+      'Please add the following markers around the inconsistencies table:\n' +
+      '<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->\n' +
+      '<table content here>\n' +
+      '<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->'
+    );
   }
-
-  // Extract the part after the section header and before the table
-  // This includes the intro text
-  const beforeTable = 'The following issues were observed in the source data from the OSI site\\*, and are highlighted in the app:\n\n';
 
   // Generate new table
   const newTable = generateTable(issues);
 
-  // Construct the new section content
-  const newSection = `## Data Inconsistencies ⚠️\n\n${beforeTable}${newTable}\n\n`;
-
-  // Replace the old section with the new one
-  const newReadme = readmeContent.replace(sectionRegex, newSection);
+  // Replace only the content between the markers
+  const newReadme = readmeContent.replace(
+    markerRegex,
+    `<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->\n${newTable}\n<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->`
+  );
 
   // Write back to file
   fs.writeFileSync(readmePath, newReadme, 'utf8');
