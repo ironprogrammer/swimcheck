@@ -292,13 +292,17 @@
     </main>
 
     <script>
+        // Constants
+        const CURRENT_DATA_VERSION = 2;
+
         // App state
         let swimData = null;
         let appState = {
             ageGroup: null,
             gender: null,
             courseType: 'SCY',
-            times: {}
+            times: {},
+            dataVersion: CURRENT_DATA_VERSION
         };
 
         // Load JSON data
@@ -332,7 +336,57 @@
             const saved = localStorage.getItem('swimCheckState');
             if (saved) {
                 const parsed = JSON.parse(saved);
-                appState = { ...appState, ...parsed };
+                // Merge parsed data, but only use default dataVersion if parsed doesn't have one
+                appState = {
+                    ...appState,
+                    ...parsed,
+                    dataVersion: parsed.dataVersion // Explicitly use parsed version (could be undefined)
+                };
+                migrateOldTimeKeys();
+            }
+        }
+
+        // Migrate old time keys from AGE_GENDER_COURSE_EVENT to GENDER_COURSE_EVENT format
+        function migrateOldTimeKeys() {
+            // Skip if already at current version or higher
+            if (appState.dataVersion >= CURRENT_DATA_VERSION) {
+                return;
+            }
+
+            // Data version is old (or missing), perform migration
+            if (!appState.times || Object.keys(appState.times).length === 0) {
+                // No times to migrate, just update version
+                appState.dataVersion = CURRENT_DATA_VERSION;
+                saveStateToStorage();
+                return;
+            }
+
+            const newTimes = {};
+            let migrated = false;
+
+            for (const [key, value] of Object.entries(appState.times)) {
+                // Count underscores to detect old format (3 underscores = 4 parts)
+                const underscoreCount = (key.match(/_/g) || []).length;
+
+                if (underscoreCount === 3) {
+                    // Old format: AGE_GENDER_COURSE_EVENT
+                    const parts = key.split('_');
+                    const newKey = parts.slice(1).join('_'); // Remove first part (age)
+                    newTimes[newKey] = value;
+                    migrated = true;
+                } else {
+                    // Already new format or keep as-is
+                    newTimes[key] = value;
+                }
+            }
+
+            // Update to current version
+            appState.times = newTimes;
+            appState.dataVersion = CURRENT_DATA_VERSION;
+            saveStateToStorage();
+
+            if (migrated) {
+                console.log(`Migrated time keys to new format (v${CURRENT_DATA_VERSION})`);
             }
         }
 
