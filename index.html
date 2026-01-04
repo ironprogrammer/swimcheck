@@ -616,6 +616,18 @@
             inputs.forEach(input => {
                 let timeout;
 
+                // Auto-select text on focus for easier replacement
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+
+                    // Prevent mouseup from repositioning cursor after select
+                    const preventMouseUp = (event) => {
+                        event.preventDefault();
+                        e.target.removeEventListener('mouseup', preventMouseUp);
+                    };
+                    e.target.addEventListener('mouseup', preventMouseUp, { once: true });
+                });
+
                 input.addEventListener('input', (e) => {
                     clearTimeout(timeout);
                     timeout = setTimeout(() => {
