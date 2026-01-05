@@ -311,7 +311,14 @@
         // Load JSON data
         async function loadData() {
             try {
-                const response = await fetch('swim_time_standards.json');
+                // Try local file first
+                let response = await fetch('swim_time_standards.json');
+
+                // If local file doesn't exist, fall back to swimcheck.org
+                if (!response.ok) {
+                    response = await fetch('https://swimcheck.org/swim_time_standards.json');
+                }
+
                 swimData = await response.json();
                 document.getElementById('seasonInfo').textContent = swimData.title;
                 initializeApp();
