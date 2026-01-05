@@ -311,7 +311,8 @@
             courseType: 'SCY',
             times: {},
             dataVersion: CURRENT_DATA_VERSION,
-            fastEntryMode: false
+            fastEntryMode: false,
+            lastModified: null
         };
 
         // Load JSON data
@@ -336,7 +337,7 @@
 
         // Initialize the app
         function initializeApp() {
-            loadStateFromStorage();
+            initializeState();
             populateAgeGroups();
             populateGenderButtons();
             setupEventListeners();
@@ -345,20 +346,20 @@
 
         // Local storage functions
         function saveStateToStorage() {
+            appState.lastModified = Date.now();
             localStorage.setItem('swimCheckState', JSON.stringify(appState));
+            updateURLFragment();
         }
 
         function loadStateFromStorage() {
             const saved = localStorage.getItem('swimCheckState');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // Merge parsed data, but only use default dataVersion if parsed doesn't have one
-                appState = {
-                    ...appState,
-                    ...parsed,
-                    dataVersion: parsed.dataVersion // Explicitly use parsed version (could be undefined)
-                };
-                migrateOldTimeKeys();
+            if (!saved) return null;
+
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                console.error('Failed to parse localStorage:', e);
+                return null;
             }
         }
 
@@ -404,6 +405,142 @@
             if (migrated) {
                 console.log(`Migrated time keys to new format (v${CURRENT_DATA_VERSION})`);
             }
+        }
+
+        // ============================================================================
+        // URL Fragment Persistence
+        // ============================================================================
+
+        // Encode state to URL-safe base64 string
+        function encodeStateToFragment(state) {
+            try {
+                const json = JSON.stringify(state);
+                const base64 = btoa(json);
+                // Make URL-safe: replace + with -, / with _, remove =
+                const urlSafe = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+                return urlSafe;
+            } catch (e) {
+                console.error('Failed to encode state:', e);
+                return null;
+            }
+        }
+
+        // Decode URL fragment back to state object
+        function decodeFragmentToState(fragment) {
+            try {
+                // Remove # if present
+                fragment = fragment.replace(/^#/, '');
+                if (!fragment) return null;
+
+                // Restore base64 padding and special chars
+                let base64 = fragment.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) {
+                    base64 += '=';
+                }
+
+                const json = atob(base64);
+                const state = JSON.parse(json);
+
+                // Validate structure
+                if (typeof state !== 'object' || !state.dataVersion) {
+                    console.warn('Invalid state structure in URL fragment');
+                    return null;
+                }
+
+                return state;
+            } catch (e) {
+                console.error('Failed to decode URL fragment:', e);
+                return null;
+            }
+        }
+
+        // Update URL fragment without adding to browser history
+        let urlUpdateTimeout = null;
+        function updateURLFragment() {
+            // Debounce: only update URL after 1.5s of no changes
+            clearTimeout(urlUpdateTimeout);
+            urlUpdateTimeout = setTimeout(() => {
+                const fragment = encodeStateToFragment(appState);
+                if (fragment) {
+                    history.replaceState(null, '', '#' + fragment);
+                }
+            }, 1500);
+        }
+
+        // Load state from URL fragment
+        function loadStateFromFragment() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') return null;
+
+            const state = decodeFragmentToState(hash);
+            return state;
+        }
+
+        // Sync logic: merge localStorage and URL fragment
+        function initializeState() {
+            const localState = loadStateFromStorage();
+            const fragmentState = loadStateFromFragment();
+
+            let sourceUsed = 'default';
+
+            // Both exist: use smart sync logic
+            if (localState && fragmentState) {
+                const localTime = localState.lastModified || 0;
+                const fragmentTime = fragmentState.lastModified || 0;
+                const localHasTimes = localState.times && Object.keys(localState.times).length > 0;
+                const fragmentHasTimes = fragmentState.times && Object.keys(fragmentState.times).length > 0;
+
+                // If localStorage has no timestamp, assume URL is newer (feature added later)
+                if (localTime === 0 && fragmentTime > 0) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment (localStorage has no timestamp)';
+                    saveStateToStorage();
+                }
+                // If one has times and the other doesn't, prefer the one with times
+                // This allows restoring from URL after clearing times
+                else if (fragmentHasTimes && !localHasTimes) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment (has times, localStorage empty)';
+                    saveStateToStorage();
+                }
+                else if (localHasTimes && !fragmentHasTimes) {
+                    appState = { ...appState, ...localState };
+                    sourceUsed = 'localStorage (has times, URL empty)';
+                    updateURLFragment();
+                }
+                // Both have times (or both empty): use timestamp
+                else if (fragmentTime > localTime) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment (newer)';
+                    saveStateToStorage();
+                } else {
+                    appState = { ...appState, ...localState };
+                    sourceUsed = 'localStorage (newer)';
+                    updateURLFragment();
+                }
+            }
+            // Only URL fragment exists
+            else if (fragmentState) {
+                appState = { ...appState, ...fragmentState };
+                sourceUsed = 'url-fragment (only source)';
+                saveStateToStorage();
+            }
+            // Only localStorage exists
+            else if (localState) {
+                appState = { ...appState, ...localState };
+                sourceUsed = 'localStorage (only source)';
+                updateURLFragment();
+            }
+            // Neither exists: use defaults
+            else {
+                sourceUsed = 'defaults (first visit)';
+                updateURLFragment();
+            }
+
+            console.log(`State loaded from: ${sourceUsed}`);
+
+            // Run migration if needed
+            migrateOldTimeKeys();
         }
 
         // Populate age groups dropdown
