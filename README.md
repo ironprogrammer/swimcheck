@@ -47,9 +47,10 @@ The following issues were observed in the source data from the OSI site\*, and a
 - **Visual Feedback**: Color-coded qualification levels for easy tracking
 - **Persistent Storage**: All times and settings saved locally between sessions
 - **Multi-Day Support**: Track times across multi-day swim meets
-- **Course Support**: SCY (Short Course Yards), SCM (Short Course Meters), LCM (Long Course Meters)
 
 ## Usage
+
+Here are the basics. See the [wiki](https://github.com/ironprogrammer/swimcheck/wiki) for more detailed instructions.
 
 1. Select your **Age Group** from the dropdown
 2. Choose **Gender** (Girls/Boys)
