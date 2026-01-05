@@ -81,6 +81,10 @@
             transition: all 0.3s ease;
         }
 
+        .time-input.invalid {
+            border: 2px solid #dc3545;
+        }
+
         /* Input border colors when standards are met */
         tr.has-value.met-a .time-input {
             border: 3px solid #28a745;
@@ -161,6 +165,7 @@
         .clear-section {
             text-align: center;
             margin-top: 2rem;
+            margin-bottom: 2rem;
             padding-top: 2rem;
             border-top: 1px solid var(--pico-muted-border-color);
         }
@@ -251,6 +256,11 @@
 
         <!-- Clear Times Section -->
         <section class="clear-section">
+            <label style="margin: 1rem auto; display: block;">
+                <input type="checkbox" id="fastEntryToggle" role="switch" />
+                Fast entry mode (numbers only)
+            </label>
+            <button type="button" id="clearTimesBtn" class="secondary">Clear all times</button>
             <p class="note-text" style="margin-bottom: 1rem;">
                 💡 Tip: Rotate your phone to landscape view for better table visibility.
             </p>
@@ -258,7 +268,6 @@
                 Times marked with ⚠️ indicate source data issues or unexpected time progressions
                 (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">more details on GitHub</a>).
             </p>
-            <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
         </section>
 
         <!-- Clear Times Confirmation Modal -->
@@ -266,14 +275,14 @@
             <article>
                 <header>
                     <button aria-label="Close" rel="prev" id="closeModalBtn"></button>
-                    <p><strong>Clear All Times?</strong></p>
+                    <p><strong>Clear all times</strong></p>
                 </header>
                 <p>
                     Are you sure you want to clear all entered times? This cannot be undone.
                 </p>
                 <footer>
                     <button type="button" class="secondary" id="cancelClearBtn">Cancel</button>
-                    <button type="button" id="confirmClearBtn">Clear All Times</button>
+                    <button type="button" id="confirmClearBtn">Clear all times</button>
                 </footer>
             </article>
         </dialog>
@@ -301,13 +310,21 @@
             gender: null,
             courseType: 'SCY',
             times: {},
-            dataVersion: CURRENT_DATA_VERSION
+            dataVersion: CURRENT_DATA_VERSION,
+            fastEntryMode: false
         };
 
         // Load JSON data
         async function loadData() {
             try {
-                const response = await fetch('swim_time_standards.json');
+                // Try local file first
+                let response = await fetch('swim_time_standards.json');
+
+                // If local file doesn't exist, fall back to swimcheck.org
+                if (!response.ok) {
+                    response = await fetch('https://swimcheck.org/swim_time_standards.json');
+                }
+
                 swimData = await response.json();
                 document.getElementById('seasonInfo').textContent = swimData.title;
                 initializeApp();
@@ -475,6 +492,23 @@
                 }
             }
 
+            // Fast entry mode toggle
+            const fastEntryToggle = document.getElementById('fastEntryToggle');
+            fastEntryToggle.checked = appState.fastEntryMode;
+            fastEntryToggle.addEventListener('change', (e) => {
+                appState.fastEntryMode = e.target.checked;
+                saveStateToStorage();
+
+                // Update inputmode on all existing time inputs
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if (appState.fastEntryMode) {
+                        input.setAttribute('inputmode', 'numeric');
+                    } else {
+                        input.removeAttribute('inputmode');
+                    }
+                });
+            });
+
             // Clear times button - show modal
             document.getElementById('clearTimesBtn').addEventListener('click', () => {
                 document.getElementById('clearTimesModal').showModal();
@@ -572,6 +606,8 @@
                 const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
                 const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
 
+                const inputModeAttr = appState.fastEntryMode ? 'inputmode="numeric"' : '';
+
                 tableHTML += `
                     <tr class="${rowClass}">
                         <td>${event.name}</td>
@@ -579,6 +615,7 @@
                             <input
                                 type="text"
                                 class="time-input"
+                                ${inputModeAttr}
                                 placeholder="mm:ss.ms"
                                 data-event-key="${eventKey}"
                                 value="${userTime}"
@@ -616,7 +653,27 @@
             inputs.forEach(input => {
                 let timeout;
 
+                // Auto-select text on focus for easier replacement
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+
+                    // Prevent mouseup from repositioning cursor after select
+                    const preventMouseUp = (event) => {
+                        event.preventDefault();
+                        e.target.removeEventListener('mouseup', preventMouseUp);
+                    };
+                    e.target.addEventListener('mouseup', preventMouseUp, { once: true });
+                });
+
                 input.addEventListener('input', (e) => {
+                    // Real-time validation feedback
+                    const value = e.target.value.trim();
+                    if (value && !isValidTimeInput(value)) {
+                        e.target.classList.add('invalid');
+                    } else {
+                        e.target.classList.remove('invalid');
+                    }
+
                     clearTimeout(timeout);
                     timeout = setTimeout(() => {
                         handleTimeInput(e.target);
@@ -630,13 +687,70 @@
             });
         }
 
+        // Validate time input contains only valid characters
+        function isValidTimeInput(value) {
+            if (!value) return true;
+            return /^[0-9:.]+$/.test(value);
+        }
+
+        // Parse time input: strip non-digits, parse right-to-left to mm:ss.xx format
+        function parseTimeInput(value) {
+            if (!value) return '';
+
+            // Strip all non-digits and leading zeros
+            let digits = value.replace(/\D/g, '');
+            digits = digits.replace(/^0+/, '') || '0'; // Remove leading zeros, keep at least one digit
+            if (digits.length === 0) return '';
+
+            const len = digits.length;
+
+            if (len === 1) {
+                // Single digit: "5" → "00.05"
+                return `00.0${digits}`;
+            } else if (len === 2) {
+                // Two digits: "34" → "00.34"
+                return `00.${digits}`;
+            } else if (len === 3) {
+                // Three digits: "123" → "01.23"
+                return `0${digits[0]}.${digits.slice(1)}`;
+            } else if (len === 4) {
+                // Four digits: "1234" → "12.34"
+                return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+            } else {
+                // Five or more digits: "12345" → "1:23.45", "123456" → "12:34.56"
+                const hundredths = digits.slice(-2);
+                const seconds = digits.slice(-4, -2);
+                const minutes = digits.slice(0, -4);
+                return `${minutes}:${seconds}.${hundredths}`;
+            }
+        }
+
         // Handle time input
         function handleTimeInput(input) {
             const eventKey = input.dataset.eventKey;
             const value = input.value.trim();
 
-            if (value) {
-                appState.times[eventKey] = value;
+            // Check for invalid characters
+            if (value && !isValidTimeInput(value)) {
+                input.classList.add('invalid');
+                delete appState.times[eventKey];
+                saveStateToStorage();
+                updateStandardHighlighting(input);
+                return;
+            }
+
+            // Remove invalid class if present
+            input.classList.remove('invalid');
+
+            // Parse and format the time
+            const parsedTime = parseTimeInput(value);
+
+            // Enforce max length of 9 characters (e.g., "190:38.98")
+            const finalTime = parsedTime.substring(0, 9);
+
+            if (finalTime) {
+                appState.times[eventKey] = finalTime;
+                input.value = finalTime;
             } else {
                 delete appState.times[eventKey];
             }
@@ -669,6 +783,11 @@
                 row.classList.add('has-value');
             } else {
                 row.classList.remove('has-value');
+                return;
+            }
+
+            // Skip comparison if input is invalid
+            if (input.classList.contains('invalid')) {
                 return;
             }
 
