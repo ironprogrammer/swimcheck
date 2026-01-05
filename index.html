@@ -255,6 +255,11 @@
 
         <!-- Clear Times Section -->
         <section class="clear-section">
+            <label style="margin: 1rem auto; display: block;">
+                <input type="checkbox" id="fastEntryToggle" role="switch" />
+                Fast entry mode (numbers only)
+            </label>
+            <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
             <p class="note-text" style="margin-bottom: 1rem;">
                 💡 Tip: Rotate your phone to landscape view for better table visibility.
             </p>
@@ -262,7 +267,6 @@
                 Times marked with ⚠️ indicate source data issues or unexpected time progressions
                 (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">more details on GitHub</a>).
             </p>
-            <button type="button" id="clearTimesBtn" class="secondary">Clear All Times</button>
         </section>
 
         <!-- Clear Times Confirmation Modal -->
@@ -305,7 +309,8 @@
             gender: null,
             courseType: 'SCY',
             times: {},
-            dataVersion: CURRENT_DATA_VERSION
+            dataVersion: CURRENT_DATA_VERSION,
+            fastEntryMode: false
         };
 
         // Load JSON data
@@ -486,6 +491,23 @@
                 }
             }
 
+            // Fast entry mode toggle
+            const fastEntryToggle = document.getElementById('fastEntryToggle');
+            fastEntryToggle.checked = appState.fastEntryMode;
+            fastEntryToggle.addEventListener('change', (e) => {
+                appState.fastEntryMode = e.target.checked;
+                saveStateToStorage();
+
+                // Update inputmode on all existing time inputs
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if (appState.fastEntryMode) {
+                        input.setAttribute('inputmode', 'numeric');
+                    } else {
+                        input.removeAttribute('inputmode');
+                    }
+                });
+            });
+
             // Clear times button - show modal
             document.getElementById('clearTimesBtn').addEventListener('click', () => {
                 document.getElementById('clearTimesModal').showModal();
@@ -583,6 +605,8 @@
                 const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
                 const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
 
+                const inputModeAttr = appState.fastEntryMode ? 'inputmode="numeric"' : '';
+
                 tableHTML += `
                     <tr class="${rowClass}">
                         <td>${event.name}</td>
@@ -590,6 +614,7 @@
                             <input
                                 type="text"
                                 class="time-input"
+                                ${inputModeAttr}
                                 placeholder="mm:ss.ms"
                                 data-event-key="${eventKey}"
                                 value="${userTime}"
