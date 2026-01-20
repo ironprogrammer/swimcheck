@@ -7,7 +7,7 @@ on:
     paths:
       - 'index.html'
       - 'swim_time_standards.json'
-      - 'social-preview.png'
+      - 'images/**'
   workflow_dispatch:
 
 permissions:
@@ -44,7 +44,7 @@ jobs:
           mkdir -p .publish
           cp index.html .publish/
           cp swim_time_standards.json .publish/
-          cp social-preview.png .publish/
+          cp -r images .publish/
           # show what will be published (helpful in logs)
           ls -la .publish
 
