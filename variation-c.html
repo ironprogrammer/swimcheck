@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swim Check - Oregon Swimming Motivational Times</title>
+    <meta name="description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://swimcheck.org/">
+    <meta property="og:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta property="og:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta property="og:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://swimcheck.org/">
+    <meta name="twitter:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta name="twitter:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta name="twitter:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <style>
+        /* ============================================================
+           VARIATION C: "Bright & Breezy"
+           Warm, approachable design for swim parents. Soft gradients,
+           coral & teal accents, rounded corners, friendly feel.
+           ============================================================ */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --coral: #f97066;
+            --coral-light: #fecaca;
+            --coral-dark: #dc2626;
+            --teal: #14b8a6;
+            --teal-light: #ccfbf1;
+            --teal-dark: #0d9488;
+
+            --qual-a: #10b981;
+            --qual-a-light: #d1fae5;
+            --qual-bplus: #0ea5e9;
+            --qual-bplus-light: #e0f2fe;
+            --qual-b: #f59e0b;
+            --qual-b-light: #fef3c7;
+
+            --bg: #faf7f5;
+            --card: #ffffff;
+            --text: #1c1917;
+            --text-sec: #57534e;
+            --text-muted: #a8a29e;
+            --border: #e7e5e4;
+
+            --radius: 14px;
+            --radius-sm: 10px;
+            --shadow: 0 2px 8px rgba(28, 25, 23, 0.06);
+            --shadow-md: 0 4px 16px rgba(28, 25, 23, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ---- Header ---- */
+        .app-header {
+            background: linear-gradient(160deg, var(--coral) 0%, #fb923c 50%, var(--teal) 100%);
+            padding: 1.75rem 1.5rem 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: var(--bg);
+            border-radius: 28px 28px 0 0;
+        }
+
+        .app-header h1 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.1rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .app-header .subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            margin-bottom: 0.65rem;
+        }
+
+        .season-pill {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.9rem;
+            border-radius: 50px;
+            letter-spacing: 0.02em;
+        }
+
+        /* ---- Main Container ---- */
+        .main-container {
+            max-width: 580px;
+            margin: -0.5rem auto 0;
+            padding: 0 1rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---- Cards ---- */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        /* ---- Select ---- */
+        .age-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--card);
+            color: var(--text);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23a8a29e' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        .age-select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        /* ---- Button Groups ---- */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .control-block label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .chip-group {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .chip-group button {
+            flex: 1;
+            padding: 0.55rem 0.25rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            background: var(--card);
+            color: var(--text-sec);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-group button:hover {
+            border-color: var(--teal-light);
+            background: var(--teal-light);
+            color: var(--teal-dark);
+        }
+
+        .chip-group button.active {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: white;
+            box-shadow: 0 2px 6px rgba(20, 184, 166, 0.3);
+        }
+
+        /* ---- Note ---- */
+        .note-text {
+            font-size: 0.78rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ---- Event Table ---- */
+        .table-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .event-grid {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .event-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .event-table thead th {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.7rem 0.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--border);
+            color: var(--text-sec);
+            background: var(--card);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .event-table thead th:first-child {
+            text-align: left;
+            padding-left: 1rem;
+        }
+
+        /* Color-coded column headers */
+        .event-table thead th.col-a {
+            color: var(--qual-a);
+        }
+        .event-table thead th.col-bplus {
+            color: var(--qual-bplus);
+        }
+        .event-table thead th.col-b {
+            color: var(--qual-b);
+        }
+
+        .event-table tbody td {
+            padding: 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f4;
+            transition: background-color 0.2s;
+        }
+
+        .event-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            padding-left: 1rem;
+            color: var(--text);
+            font-size: 0.83rem;
+        }
+
+        .event-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Row with entered value */
+        .event-table tr.has-value td {
+            background-color: #fafaf9;
+        }
+
+        /* Row with invalid standard */
+        .event-table tr.has-invalid-standard td {
+            background-color: #fffbeb;
+        }
+
+        /* ---- Time Input ---- */
+        .time-input {
+            width: 100%;
+            min-width: 85px;
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 0.5rem 0.25rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--card);
+            color: var(--text);
+            transition: all 0.2s ease;
+        }
+
+        .time-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.8rem;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.12);
+        }
+
+        .time-input.invalid {
+            border-color: var(--coral);
+            box-shadow: 0 0 0 3px rgba(249, 112, 102, 0.12);
+        }
+
+        /* Input when standards met */
+        tr.has-value.met-a .time-input {
+            border-color: var(--qual-a);
+            background: var(--qual-a-light);
+        }
+
+        tr.has-value.met-b-plus .time-input {
+            border-color: var(--qual-bplus);
+            background: var(--qual-bplus-light);
+        }
+
+        tr.has-value.met-b .time-input {
+            border-color: var(--qual-b);
+            background: var(--qual-b-light);
+        }
+
+        /* ---- Standard Cells ---- */
+        .standard-cell {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            transition: all 0.2s ease;
+        }
+
+        .time-value {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+        }
+
+        .standard-cell.met {
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 0.2rem 0.4rem !important;
+            animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.85); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .standard-cell.met-a {
+            background: var(--qual-a) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b-plus {
+            background: var(--qual-bplus) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b {
+            background: var(--qual-b) !important;
+            color: #78350f;
+        }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 2.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 260px;
+            margin: 0 auto;
+        }
+
+        /* ---- Bottom Actions ---- */
+        .actions-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .toggle-wrapper span {
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            font-weight: 500;
+        }
+
+        .toggle-wrapper input[type="checkbox"] {
+            width: 2.5rem;
+            height: 1.4rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--border);
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+
+        .toggle-wrapper input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: calc(1.4rem - 6px);
+            height: calc(1.4rem - 6px);
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .toggle-wrapper input[type="checkbox"]:checked {
+            background: var(--teal);
+        }
+
+        .toggle-wrapper input[type="checkbox"]:checked::after {
+            transform: translateX(calc(2.5rem - 1.4rem));
+        }
+
+        .clear-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.55rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--coral);
+            background: rgba(249, 112, 102, 0.08);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            background: rgba(249, 112, 102, 0.15);
+        }
+
+        .clear-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* ---- Tips ---- */
+        .tips {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .tips a {
+            color: var(--teal-dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .tips a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---- Footer ---- */
+        .app-footer {
+            text-align: center;
+            padding: 1.5rem 1rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-phrase {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-phrase .heart {
+            color: var(--coral);
+        }
+
+        .footer-support {
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .footer-support strong {
+            color: var(--text);
+        }
+
+        .footer-support a {
+            color: var(--teal-dark);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-support a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+
+        /* ---- Divider ---- */
+        .footer-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 0 2rem;
+        }
+
+        /* ---- Modal ---- */
+        dialog {
+            border: none;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            max-width: 360px;
+            width: 90%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        dialog::backdrop {
+            background: rgba(28, 25, 23, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        dialog article {
+            padding: 0;
+        }
+
+        dialog header {
+            padding: 1.25rem 1.25rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        dialog header p {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        dialog header button {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        dialog > article > p {
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-sec);
+        }
+
+        dialog footer {
+            padding: 0 1.25rem 1.25rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        dialog footer button {
+            padding: 0.6rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        dialog footer .secondary {
+            background: #f5f5f4;
+            color: var(--text-sec);
+        }
+
+        dialog footer button:not(.secondary) {
+            background: var(--coral);
+            color: white;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 480px) {
+            .app-header h1 {
+                font-size: 1.45rem;
+            }
+
+            .event-table {
+                font-size: 0.8rem;
+            }
+
+            .time-input {
+                min-width: 78px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.2rem;
+            }
+        }
+    </style>
+    <script data-goatcounter="https://ironprogrammer.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="405f9ef9-9a18-4ad2-9051-2fc5fd905872"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <h1>Swim Check</h1>
+        <div class="subtitle">Motivational Times Lookup</div>
+        <span class="season-pill" id="seasonInfo">Loading...</span>
+    </header>
+
+    <div class="main-container">
+        <!-- Age Group -->
+        <div class="card">
+            <div class="card-label">Age Group</div>
+            <select id="ageGroupSelect" class="age-select" aria-label="Select age group">
+                <option value="">Select Age Group</option>
+            </select>
+        </div>
+
+        <!-- Gender & Course -->
+        <div class="card">
+            <div class="controls-grid">
+                <div class="control-block">
+                    <label>Gender</label>
+                    <div class="chip-group" id="genderButtons" role="group" aria-label="Select gender">
+                    </div>
+                </div>
+                <div class="control-block">
+                    <label>Course</label>
+                    <div class="chip-group" id="courseButtons" role="group" aria-label="Select course type">
+                        <button type="button" data-course="SCY">SCY</button>
+                        <button type="button" data-course="SCM">SCM</button>
+                        <button type="button" data-course="LCM">LCM</button>
+                    </div>
+                </div>
+            </div>
+            <div id="noteDisplay" class="note-text"></div>
+        </div>
+
+        <!-- Event Grid -->
+        <div class="table-card">
+            <div class="event-grid">
+                <div id="eventsContainer">
+                    <div class="empty-state">
+                        <div class="empty-icon">🏊‍♀️</div>
+                        <p>Pick your swimmer's age group, gender, and course to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card actions-card">
+            <label class="toggle-wrapper">
+                <input type="checkbox" id="fastEntryToggle" />
+                <span>Fast entry</span>
+            </label>
+            <button type="button" id="clearTimesBtn" class="clear-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Clear times
+            </button>
+        </div>
+
+        <div class="tips">
+            Tip: Rotate to landscape for a wider view.<br>
+            ⚠️ marks indicate source data issues
+            (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">details on GitHub</a>).
+        </div>
+
+        <!-- Clear Modal -->
+        <dialog id="clearTimesModal">
+            <article>
+                <header>
+                    <p><strong>Clear all times?</strong></p>
+                    <button aria-label="Close" id="closeModalBtn">&times;</button>
+                </header>
+                <p>This will remove all entered times. You can't undo this.</p>
+                <footer>
+                    <button type="button" class="secondary" id="cancelClearBtn">Cancel</button>
+                    <button type="button" id="confirmClearBtn">Clear all</button>
+                </footer>
+            </article>
+        </dialog>
+
+        <!-- Footer -->
+        <div class="footer-divider"></div>
+        <footer class="app-footer">
+            <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
+            <div class="footer-support">
+                <p><strong>Love Swim Check?</strong><br>
+                <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">Contribute on GitHub</a> or buy me a coffee!</p>
+            </div>
+            <div class="footer-buttons">
+                <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 48px !important;width: 174px !important;"></a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Constants
+        const CURRENT_DATA_VERSION = 2;
+
+        // App state
+        let swimData = null;
+        let appState = {
+            ageGroup: null,
+            gender: null,
+            courseType: 'SCY',
+            times: {},
+            dataVersion: CURRENT_DATA_VERSION,
+            fastEntryMode: false,
+            lastModified: null
+        };
+
+        async function loadData() {
+            try {
+                let response = await fetch('swim_time_standards.json');
+                if (!response.ok) {
+                    response = await fetch('https://swimcheck.org/swim_time_standards.json');
+                }
+                swimData = await response.json();
+                document.getElementById('seasonInfo').textContent = swimData.title;
+                initializeApp();
+            } catch (error) {
+                console.error('Failed to load swim data:', error);
+                document.getElementById('seasonInfo').textContent = 'Error loading data';
+            }
+        }
+
+        function initializeApp() {
+            initializeState();
+            populateAgeGroups();
+            populateGenderButtons();
+            setupEventListeners();
+            renderEvents();
+        }
+
+        function saveStateToStorage() {
+            appState.lastModified = Date.now();
+            localStorage.setItem('swimCheckState', JSON.stringify(appState));
+            updateURLFragment();
+        }
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('swimCheckState');
+            if (!saved) return null;
+            try { return JSON.parse(saved); }
+            catch (e) { console.error('Failed to parse localStorage:', e); return null; }
+        }
+
+        function migrateOldTimeKeys() {
+            if (appState.dataVersion >= CURRENT_DATA_VERSION) return;
+            if (!appState.times || Object.keys(appState.times).length === 0) {
+                appState.dataVersion = CURRENT_DATA_VERSION;
+                saveStateToStorage();
+                return;
+            }
+            const newTimes = {};
+            let migrated = false;
+            for (const [key, value] of Object.entries(appState.times)) {
+                const underscoreCount = (key.match(/_/g) || []).length;
+                if (underscoreCount === 3) {
+                    const parts = key.split('_');
+                    newTimes[parts.slice(1).join('_')] = value;
+                    migrated = true;
+                } else {
+                    newTimes[key] = value;
+                }
+            }
+            appState.times = newTimes;
+            appState.dataVersion = CURRENT_DATA_VERSION;
+            saveStateToStorage();
+            if (migrated) console.log(`Migrated time keys to v${CURRENT_DATA_VERSION}`);
+        }
+
+        function encodeStateToFragment(state) {
+            try {
+                const base64 = btoa(JSON.stringify(state));
+                return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            } catch (e) { return null; }
+        }
+
+        function decodeFragmentToState(fragment) {
+            try {
+                fragment = fragment.replace(/^#/, '');
+                if (!fragment) return null;
+                let base64 = fragment.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) base64 += '=';
+                const state = JSON.parse(atob(base64));
+                if (typeof state !== 'object' || !state.dataVersion) return null;
+                return state;
+            } catch (e) { return null; }
+        }
+
+        let urlUpdateTimeout = null;
+        function updateURLFragment() {
+            clearTimeout(urlUpdateTimeout);
+            urlUpdateTimeout = setTimeout(() => {
+                const fragment = encodeStateToFragment(appState);
+                if (fragment) history.replaceState(null, '', '#' + fragment);
+            }, 1500);
+        }
+
+        function loadStateFromFragment() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') return null;
+            return decodeFragmentToState(hash);
+        }
+
+        function initializeState() {
+            const localState = loadStateFromStorage();
+            const fragmentState = loadStateFromFragment();
+            let sourceUsed = 'default';
+
+            if (localState && fragmentState) {
+                const localTime = localState.lastModified || 0;
+                const fragmentTime = fragmentState.lastModified || 0;
+                const localHasTimes = localState.times && Object.keys(localState.times).length > 0;
+                const fragmentHasTimes = fragmentState.times && Object.keys(fragmentState.times).length > 0;
+
+                if (localTime === 0 && fragmentTime > 0) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else if (fragmentHasTimes && !localHasTimes) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else if (localHasTimes && !fragmentHasTimes) {
+                    appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+                } else if (fragmentTime > localTime) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else {
+                    appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+                }
+            } else if (fragmentState) {
+                appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+            } else if (localState) {
+                appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+            } else {
+                sourceUsed = 'defaults'; updateURLFragment();
+            }
+            console.log(`State loaded from: ${sourceUsed}`);
+            migrateOldTimeKeys();
+        }
+
+        function populateAgeGroups() {
+            const select = document.getElementById('ageGroupSelect');
+            swimData.ageGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.age;
+                option.textContent = group.age;
+                select.appendChild(option);
+            });
+            if (appState.ageGroup) select.value = appState.ageGroup;
+        }
+
+        function populateGenderButtons() {
+            const container = document.getElementById('genderButtons');
+            const genders = new Set();
+            swimData.ageGroups.forEach(group => {
+                Object.keys(group.genders).forEach(gender => genders.add(gender));
+            });
+            genders.forEach(gender => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = gender;
+                button.dataset.gender = gender;
+                if (appState.gender === gender) button.classList.add('active');
+                container.appendChild(button);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('ageGroupSelect').addEventListener('change', (e) => {
+                appState.ageGroup = e.target.value;
+                saveStateToStorage();
+                renderEvents();
+            });
+
+            document.getElementById('genderButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#genderButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.gender = e.target.dataset.gender;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            document.getElementById('courseButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#courseButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.courseType = e.target.dataset.course;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            if (appState.courseType) {
+                const courseBtn = document.querySelector(`[data-course="${appState.courseType}"]`);
+                if (courseBtn) courseBtn.classList.add('active');
+            }
+
+            const fastEntryToggle = document.getElementById('fastEntryToggle');
+            fastEntryToggle.checked = appState.fastEntryMode;
+            fastEntryToggle.addEventListener('change', (e) => {
+                appState.fastEntryMode = e.target.checked;
+                saveStateToStorage();
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if (appState.fastEntryMode) input.setAttribute('inputmode', 'numeric');
+                    else input.removeAttribute('inputmode');
+                });
+            });
+
+            document.getElementById('clearTimesBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').showModal();
+            });
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('cancelClearBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('confirmClearBtn').addEventListener('click', () => {
+                appState.times = {};
+                saveStateToStorage();
+                renderEvents();
+                document.getElementById('clearTimesModal').close();
+            });
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            const noteDisplay = document.getElementById('noteDisplay');
+            noteDisplay.textContent = '';
+
+            if (!appState.ageGroup || !appState.gender || !appState.courseType) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏊‍♀️</div><p>Pick your swimmer\'s age group, gender, and course to get started!</p></div>';
+                return;
+            }
+
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData || !ageGroupData.genders[appState.gender]) {
+                container.innerHTML = '<div class="empty-state"><p>No events found for selected criteria.</p></div>';
+                return;
+            }
+
+            if (ageGroupData.note) noteDisplay.textContent = ageGroupData.note;
+
+            const events = ageGroupData.genders[appState.gender].events;
+            const course = appState.courseType;
+
+            let tableHTML = `
+                <table class="event-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Time</th>
+                            <th class="col-a">A</th>
+                            <th class="col-bplus">B+</th>
+                            <th class="col-b">B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            events.forEach(event => {
+                const times = event[course];
+                if (!times || (times.A === null && times['B+'] === null && times.B === null)) return;
+
+                const eventKey = `${appState.gender}_${course}_${event.name}`;
+                const userTime = appState.times[eventKey] || '';
+                const qualification = userTime ? getQualification(userTime, times) : null;
+
+                let rowClass = userTime ? 'has-value' : '';
+                if (hasInvalidStandard(times)) rowClass += ' has-invalid-standard';
+                if (qualification === 'a') rowClass += ' met-a';
+                else if (qualification === 'b-plus') rowClass += ' met-b-plus';
+                else if (qualification === 'b') rowClass += ' met-b';
+
+                const aClass = qualification === 'a' ? 'standard-cell met met-a' : 'standard-cell';
+                const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
+                const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
+                const inputModeAttr = appState.fastEntryMode ? 'inputmode="numeric"' : '';
+
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td>${event.name}</td>
+                        <td>
+                            <input type="text" class="time-input" ${inputModeAttr}
+                                placeholder="mm:ss.ms" data-event-key="${eventKey}"
+                                value="${userTime}" aria-label="Enter time for ${event.name}">
+                        </td>
+                        <td class="${aClass} time-value" data-standard="a" data-event-key="${eventKey}">${times.A || 'n/a'}</td>
+                        <td class="${bPlusClass} time-value" data-standard="b-plus" data-event-key="${eventKey}">${times['B+'] || 'n/a'}</td>
+                        <td class="${bClass} time-value" data-standard="b" data-event-key="${eventKey}">${times.B || 'n/a'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+            setupTimeInputHandlers();
+        }
+
+        function setupTimeInputHandlers() {
+            document.querySelectorAll('.time-input').forEach(input => {
+                let timeout;
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+                    const preventMouseUp = (event) => { event.preventDefault(); e.target.removeEventListener('mouseup', preventMouseUp); };
+                    e.target.addEventListener('mouseup', preventMouseUp, { once: true });
+                });
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value.trim();
+                    if (value && !isValidTimeInput(value)) e.target.classList.add('invalid');
+                    else e.target.classList.remove('invalid');
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => handleTimeInput(e.target), 500);
+                });
+                input.addEventListener('blur', (e) => { clearTimeout(timeout); handleTimeInput(e.target); });
+            });
+        }
+
+        function isValidTimeInput(value) {
+            if (!value) return true;
+            return /^[0-9:.]+$/.test(value);
+        }
+
+        function parseTimeInput(value) {
+            if (!value) return '';
+            let digits = value.replace(/\D/g, '');
+            digits = digits.replace(/^0+/, '') || '0';
+            if (digits.length === 0) return '';
+            const len = digits.length;
+            if (len === 1) return `00.0${digits}`;
+            if (len === 2) return `00.${digits}`;
+            if (len === 3) return `0${digits[0]}.${digits.slice(1)}`;
+            if (len === 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+            const hundredths = digits.slice(-2);
+            const seconds = digits.slice(-4, -2);
+            const minutes = digits.slice(0, -4);
+            return `${minutes}:${seconds}.${hundredths}`;
+        }
+
+        function handleTimeInput(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            if (value && !isValidTimeInput(value)) {
+                input.classList.add('invalid');
+                delete appState.times[eventKey];
+                saveStateToStorage();
+                updateStandardHighlighting(input);
+                return;
+            }
+            input.classList.remove('invalid');
+            const parsedTime = parseTimeInput(value);
+            const finalTime = parsedTime.substring(0, 9);
+            if (finalTime) { appState.times[eventKey] = finalTime; input.value = finalTime; }
+            else { delete appState.times[eventKey]; }
+            saveStateToStorage();
+            updateStandardHighlighting(input);
+        }
+
+        function updateStandardHighlighting(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            const row = input.closest('tr');
+            const standardCells = row.querySelectorAll('.standard-cell');
+            standardCells.forEach(cell => cell.classList.remove('met', 'met-a', 'met-b-plus', 'met-b'));
+            row.classList.remove('met-a', 'met-b-plus', 'met-b');
+            if (value) row.classList.add('has-value');
+            else { row.classList.remove('has-value'); return; }
+            if (input.classList.contains('invalid')) return;
+
+            const [gender, course, eventName] = eventKey.split('_');
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData) return;
+            const event = ageGroupData.genders[gender].events.find(e => e.name === eventName);
+            if (!event) return;
+            const times = event[course];
+            const qualification = getQualification(value, times);
+
+            if (qualification === 'a') {
+                const aCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'a');
+                if (aCell) aCell.classList.add('met', 'met-a');
+                row.classList.add('met-a');
+            } else if (qualification === 'b-plus') {
+                const bPlusCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b-plus');
+                if (bPlusCell) bPlusCell.classList.add('met', 'met-b-plus');
+                row.classList.add('met-b-plus');
+            } else if (qualification === 'b') {
+                const bCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b');
+                if (bCell) bCell.classList.add('met', 'met-b');
+                row.classList.add('met-b');
+            }
+        }
+
+        function getQualification(userTime, standards) {
+            const userSeconds = timeToSeconds(userTime);
+            if (userSeconds === null) return null;
+            const aTime = (standards.A && !standards.A.includes('⚠️')) ? timeToSeconds(standards.A) : null;
+            const bPlusTime = (standards['B+'] && !standards['B+'].includes('⚠️')) ? timeToSeconds(standards['B+']) : null;
+            const bTime = (standards.B && !standards.B.includes('⚠️')) ? timeToSeconds(standards.B) : null;
+            if (aTime !== null && userSeconds <= aTime) return 'a';
+            if (bPlusTime !== null && userSeconds <= bPlusTime) return 'b-plus';
+            if (bTime !== null && userSeconds <= bTime) return 'b';
+            return 'none';
+        }
+
+        function hasInvalidStandard(times) {
+            return (times.A && times.A.includes('⚠️')) || (times['B+'] && times['B+'].includes('⚠️')) || (times.B && times.B.includes('⚠️'));
+        }
+
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return null;
+            timeStr = timeStr.trim().replace(/[^0-9:.]/g, '');
+            const parts = timeStr.split(':');
+            let minutes = 0, seconds = 0;
+            if (parts.length === 2) { minutes = parseFloat(parts[0]) || 0; seconds = parseFloat(parts[1]) || 0; }
+            else if (parts.length === 1) { seconds = parseFloat(parts[0]) || 0; }
+            else return null;
+            return minutes * 60 + seconds;
+        }
+
+        function setRandomFooterPhrase() {
+            const phrases = [
+                'Made with <span class="heart">❤️</span> in war-torn PDX',
+                'Made with <span class="heart">❤️</span> while PDX is aflame',
+                'Built with <span class="heart">❤️</span> and the bravery to venture into the rough streets of PDX',
+                'Made with <span class="heart">❤️</span> between pickleball games in war-ravaged PDX',
+                'Crafted with <span class="heart">❤️</span> from the front lines of PDX',
+                'Freshly brewed with <span class="heart">❤️</span> and Courier Coffee',
+                'Finely tuned with <span class="heart">❤️</span> and Blue Star donuts',
+                'Bravely coded with <span class="heart">❤️</span> from the epicenter of the PDX war zone',
+                'Banged out with <span class="heart">❤️</span> and used gear from Revival Drums PDX',
+                'Shamelessly sponsored with <span class="heart">❤️</span> by [YOUR COMPANY HERE]'
+            ];
+            const footerElement = document.getElementById('footerPhrase');
+            if (footerElement) footerElement.innerHTML = phrases[Math.floor(Math.random() * phrases.length)];
+        }
+
+        loadData();
+        setRandomFooterPhrase();
+    </script>
+</body>
+</html>

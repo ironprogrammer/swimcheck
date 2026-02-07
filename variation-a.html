@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swim Check - Oregon Swimming Motivational Times</title>
+    <meta name="description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://swimcheck.org/">
+    <meta property="og:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta property="og:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta property="og:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://swimcheck.org/">
+    <meta name="twitter:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta name="twitter:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta name="twitter:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <style>
+        /* ============================================================
+           VARIATION A: "Aquatic Vibes"
+           Pool-inspired gradients, card-based layout, pill buttons,
+           vibrant qualification colors, water-themed accents
+           ============================================================ */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --pool-deep: #0a2463;
+            --pool-mid: #1e5f8a;
+            --pool-light: #3a9cc4;
+            --pool-surface: #7ecce5;
+            --pool-foam: #d4f1f9;
+            --pool-white: #f0f9ff;
+
+            --qual-a: #10b981;
+            --qual-a-dark: #059669;
+            --qual-bplus: #06b6d4;
+            --qual-bplus-dark: #0891b2;
+            --qual-b: #f59e0b;
+            --qual-b-dark: #d97706;
+
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --text-white: #ffffff;
+
+            --surface-card: #ffffff;
+            --surface-bg: #f0f9ff;
+            --border-light: #e2e8f0;
+            --border-focus: #3a9cc4;
+
+            --shadow-sm: 0 1px 3px rgba(10, 36, 99, 0.08);
+            --shadow-md: 0 4px 12px rgba(10, 36, 99, 0.12);
+            --shadow-lg: 0 8px 24px rgba(10, 36, 99, 0.16);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-pill: 50px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--surface-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ---- Header ---- */
+        .app-header {
+            background: linear-gradient(135deg, var(--pool-deep) 0%, var(--pool-mid) 50%, var(--pool-light) 100%);
+            color: var(--text-white);
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 24px;
+            background: var(--surface-bg);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .app-header h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.15rem;
+        }
+
+        .app-header h4 {
+            font-size: 0.95rem;
+            font-weight: 400;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+        }
+
+        .season-info {
+            display: inline-block;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.02em;
+        }
+
+        /* ---- Main Container ---- */
+        .main-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem 1rem 2rem;
+        }
+
+        /* ---- Cards ---- */
+        .card {
+            background: var(--surface-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ---- Select ---- */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            background: var(--surface-card);
+            color: var(--text-primary);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .select-wrapper select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(58, 156, 196, 0.15);
+        }
+
+        .select-wrapper::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 6px solid var(--text-secondary);
+            pointer-events: none;
+        }
+
+        /* ---- Pill Button Group ---- */
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 0.6rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-pill);
+            background: var(--surface-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .button-group button:hover {
+            border-color: var(--pool-light);
+            color: var(--pool-mid);
+        }
+
+        .button-group button.active {
+            background: linear-gradient(135deg, var(--pool-mid), var(--pool-light));
+            border-color: transparent;
+            color: var(--text-white);
+            box-shadow: 0 2px 8px rgba(30, 95, 138, 0.3);
+        }
+
+        /* ---- Note Text ---- */
+        .note-text {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ---- Event Table ---- */
+        .event-grid {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .event-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.85rem;
+        }
+
+        .event-table thead th {
+            background: var(--pool-deep);
+            color: var(--text-white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.65rem 0.5rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .event-table thead th:first-child {
+            text-align: left;
+            border-radius: var(--radius-md) 0 0 0;
+        }
+
+        .event-table thead th:last-child {
+            border-radius: 0 var(--radius-md) 0 0;
+        }
+
+        .event-table tbody td {
+            padding: 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            transition: background-color 0.25s ease;
+        }
+
+        .event-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+        }
+
+        .event-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .event-table tbody tr:hover td {
+            background-color: rgba(126, 204, 229, 0.08);
+        }
+
+        /* Row with entered value */
+        .event-table tr.has-value td {
+            background-color: rgba(58, 156, 196, 0.06);
+        }
+
+        /* Row with invalid standard */
+        .event-table tr.has-invalid-standard td {
+            background-color: #fffbeb;
+        }
+
+        /* ---- Time Input ---- */
+        .time-input {
+            width: 100%;
+            min-width: 90px;
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 0.45rem 0.3rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: var(--pool-light);
+            box-shadow: 0 0 0 3px rgba(58, 156, 196, 0.12);
+        }
+
+        .time-input.invalid {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Input borders when standards are met */
+        tr.has-value.met-a .time-input {
+            border-color: var(--qual-a);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        tr.has-value.met-b-plus .time-input {
+            border-color: var(--qual-bplus);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+
+        tr.has-value.met-b .time-input {
+            border-color: var(--qual-b);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+        }
+
+        /* ---- Standard Cells ---- */
+        .standard-cell {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.25s ease;
+        }
+
+        .time-value {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+        }
+
+        .standard-cell.met {
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+        }
+
+        .standard-cell.met-a {
+            background: var(--qual-a) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b-plus {
+            background: var(--qual-bplus) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b {
+            background: var(--qual-b) !important;
+            color: #78350f;
+        }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        /* ---- Controls Section ---- */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .fast-entry-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .fast-entry-toggle input[type="checkbox"] {
+            width: 2.5rem;
+            height: 1.35rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--border-light);
+            border-radius: var(--radius-pill);
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .fast-entry-toggle input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(1.35rem - 4px);
+            height: calc(1.35rem - 4px);
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .fast-entry-toggle input[type="checkbox"]:checked {
+            background: var(--pool-light);
+        }
+
+        .fast-entry-toggle input[type="checkbox"]:checked::after {
+            transform: translateX(calc(2.5rem - 1.35rem));
+        }
+
+        /* ---- Clear Button ---- */
+        .clear-btn {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* ---- Tips ---- */
+        .tips {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .tips a {
+            color: var(--pool-light);
+            text-decoration: none;
+        }
+
+        .tips a:hover {
+            text-decoration: underline;
+        }
+
+        /* ---- Footer ---- */
+        .app-footer {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border-light);
+            margin-top: 1rem;
+        }
+
+        .footer-phrase {
+            margin-bottom: 1rem;
+        }
+
+        .footer-phrase .heart {
+            color: #ef4444;
+        }
+
+        .footer-support {
+            margin-bottom: 0.75rem;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .footer-support strong {
+            color: var(--text-primary);
+        }
+
+        .footer-support a {
+            color: var(--pool-light);
+            text-decoration: none;
+        }
+
+        .footer-support a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+
+        /* ---- Modal ---- */
+        dialog {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        dialog::backdrop {
+            background: rgba(10, 36, 99, 0.5);
+        }
+
+        dialog article {
+            padding: 0;
+        }
+
+        dialog header {
+            padding: 1.25rem 1.25rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        dialog header p {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        dialog header button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        dialog > article > p {
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        dialog footer {
+            padding: 0 1.25rem 1.25rem;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        dialog footer button {
+            padding: 0.6rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        dialog footer .secondary {
+            background: var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        dialog footer button:not(.secondary) {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 480px) {
+            .app-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .event-table {
+                font-size: 0.8rem;
+            }
+
+            .time-input {
+                min-width: 80px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.2rem;
+            }
+        }
+    </style>
+    <script data-goatcounter="https://ironprogrammer.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="405f9ef9-9a18-4ad2-9051-2fc5fd905872"></script>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Swim Check</h1>
+        <h4>Motivational Times Lookup</h4>
+        <span class="season-info" id="seasonInfo">Loading...</span>
+    </header>
+
+    <div class="main-container">
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-label">Age Group</div>
+            <div class="select-wrapper">
+                <select id="ageGroupSelect" aria-label="Select age group">
+                    <option value="">Select Age Group</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Gender</div>
+            <div class="button-group" id="genderButtons" role="group" aria-label="Select gender">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-label">Course Type</div>
+            <div class="button-group" id="courseButtons" role="group" aria-label="Select course type">
+                <button type="button" data-course="SCY">SCY</button>
+                <button type="button" data-course="SCM">SCM</button>
+                <button type="button" data-course="LCM">LCM</button>
+            </div>
+        </div>
+
+        <div id="noteDisplay" class="note-text"></div>
+
+        <!-- Event Grid -->
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <div class="event-grid">
+                <div id="eventsContainer">
+                    <div class="empty-state">
+                        <div class="empty-icon">🏊</div>
+                        <p>Select age group, gender, and course type to view events.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="card">
+            <div class="controls-row">
+                <label class="fast-entry-toggle">
+                    <input type="checkbox" id="fastEntryToggle" />
+                    Fast entry
+                </label>
+                <button type="button" id="clearTimesBtn" class="clear-btn">Clear all times</button>
+            </div>
+            <div class="tips">
+                Rotate your phone to landscape for a better table view.<br>
+                Times marked with ⚠️ indicate source data issues
+                (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">details</a>).
+            </div>
+        </div>
+
+        <!-- Clear Times Modal -->
+        <dialog id="clearTimesModal">
+            <article>
+                <header>
+                    <p><strong>Clear all times</strong></p>
+                    <button aria-label="Close" id="closeModalBtn">&times;</button>
+                </header>
+                <p>Are you sure you want to clear all entered times? This cannot be undone.</p>
+                <footer>
+                    <button type="button" class="secondary" id="cancelClearBtn">Cancel</button>
+                    <button type="button" id="confirmClearBtn">Clear all times</button>
+                </footer>
+            </article>
+        </dialog>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
+            <div class="footer-support">
+                <p><strong>Find Swim Check useful?</strong><br>
+                <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">Contribute on GitHub</a> or buy me a coffee!</p>
+            </div>
+            <div class="footer-buttons">
+                <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;"></a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Constants
+        const CURRENT_DATA_VERSION = 2;
+
+        // App state
+        let swimData = null;
+        let appState = {
+            ageGroup: null,
+            gender: null,
+            courseType: 'SCY',
+            times: {},
+            dataVersion: CURRENT_DATA_VERSION,
+            fastEntryMode: false,
+            lastModified: null
+        };
+
+        // Load JSON data
+        async function loadData() {
+            try {
+                let response = await fetch('swim_time_standards.json');
+                if (!response.ok) {
+                    response = await fetch('https://swimcheck.org/swim_time_standards.json');
+                }
+                swimData = await response.json();
+                document.getElementById('seasonInfo').textContent = swimData.title;
+                initializeApp();
+            } catch (error) {
+                console.error('Failed to load swim data:', error);
+                document.getElementById('seasonInfo').textContent = 'Error loading data';
+            }
+        }
+
+        function initializeApp() {
+            initializeState();
+            populateAgeGroups();
+            populateGenderButtons();
+            setupEventListeners();
+            renderEvents();
+        }
+
+        function saveStateToStorage() {
+            appState.lastModified = Date.now();
+            localStorage.setItem('swimCheckState', JSON.stringify(appState));
+            updateURLFragment();
+        }
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('swimCheckState');
+            if (!saved) return null;
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                console.error('Failed to parse localStorage:', e);
+                return null;
+            }
+        }
+
+        function migrateOldTimeKeys() {
+            if (appState.dataVersion >= CURRENT_DATA_VERSION) return;
+            if (!appState.times || Object.keys(appState.times).length === 0) {
+                appState.dataVersion = CURRENT_DATA_VERSION;
+                saveStateToStorage();
+                return;
+            }
+            const newTimes = {};
+            let migrated = false;
+            for (const [key, value] of Object.entries(appState.times)) {
+                const underscoreCount = (key.match(/_/g) || []).length;
+                if (underscoreCount === 3) {
+                    const parts = key.split('_');
+                    const newKey = parts.slice(1).join('_');
+                    newTimes[newKey] = value;
+                    migrated = true;
+                } else {
+                    newTimes[key] = value;
+                }
+            }
+            appState.times = newTimes;
+            appState.dataVersion = CURRENT_DATA_VERSION;
+            saveStateToStorage();
+            if (migrated) console.log(`Migrated time keys to new format (v${CURRENT_DATA_VERSION})`);
+        }
+
+        function encodeStateToFragment(state) {
+            try {
+                const json = JSON.stringify(state);
+                const base64 = btoa(json);
+                return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            } catch (e) {
+                console.error('Failed to encode state:', e);
+                return null;
+            }
+        }
+
+        function decodeFragmentToState(fragment) {
+            try {
+                fragment = fragment.replace(/^#/, '');
+                if (!fragment) return null;
+                let base64 = fragment.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) base64 += '=';
+                const json = atob(base64);
+                const state = JSON.parse(json);
+                if (typeof state !== 'object' || !state.dataVersion) return null;
+                return state;
+            } catch (e) {
+                console.error('Failed to decode URL fragment:', e);
+                return null;
+            }
+        }
+
+        let urlUpdateTimeout = null;
+        function updateURLFragment() {
+            clearTimeout(urlUpdateTimeout);
+            urlUpdateTimeout = setTimeout(() => {
+                const fragment = encodeStateToFragment(appState);
+                if (fragment) history.replaceState(null, '', '#' + fragment);
+            }, 1500);
+        }
+
+        function loadStateFromFragment() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') return null;
+            return decodeFragmentToState(hash);
+        }
+
+        function initializeState() {
+            const localState = loadStateFromStorage();
+            const fragmentState = loadStateFromFragment();
+            let sourceUsed = 'default';
+
+            if (localState && fragmentState) {
+                const localTime = localState.lastModified || 0;
+                const fragmentTime = fragmentState.lastModified || 0;
+                const localHasTimes = localState.times && Object.keys(localState.times).length > 0;
+                const fragmentHasTimes = fragmentState.times && Object.keys(fragmentState.times).length > 0;
+
+                if (localTime === 0 && fragmentTime > 0) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment';
+                    saveStateToStorage();
+                } else if (fragmentHasTimes && !localHasTimes) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment';
+                    saveStateToStorage();
+                } else if (localHasTimes && !fragmentHasTimes) {
+                    appState = { ...appState, ...localState };
+                    sourceUsed = 'localStorage';
+                    updateURLFragment();
+                } else if (fragmentTime > localTime) {
+                    appState = { ...appState, ...fragmentState };
+                    sourceUsed = 'url-fragment';
+                    saveStateToStorage();
+                } else {
+                    appState = { ...appState, ...localState };
+                    sourceUsed = 'localStorage';
+                    updateURLFragment();
+                }
+            } else if (fragmentState) {
+                appState = { ...appState, ...fragmentState };
+                sourceUsed = 'url-fragment';
+                saveStateToStorage();
+            } else if (localState) {
+                appState = { ...appState, ...localState };
+                sourceUsed = 'localStorage';
+                updateURLFragment();
+            } else {
+                sourceUsed = 'defaults';
+                updateURLFragment();
+            }
+            console.log(`State loaded from: ${sourceUsed}`);
+            migrateOldTimeKeys();
+        }
+
+        function populateAgeGroups() {
+            const select = document.getElementById('ageGroupSelect');
+            swimData.ageGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.age;
+                option.textContent = group.age;
+                select.appendChild(option);
+            });
+            if (appState.ageGroup) select.value = appState.ageGroup;
+        }
+
+        function populateGenderButtons() {
+            const container = document.getElementById('genderButtons');
+            const genders = new Set();
+            swimData.ageGroups.forEach(group => {
+                Object.keys(group.genders).forEach(gender => genders.add(gender));
+            });
+            genders.forEach(gender => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = gender;
+                button.dataset.gender = gender;
+                if (appState.gender === gender) button.classList.add('active');
+                container.appendChild(button);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('ageGroupSelect').addEventListener('change', (e) => {
+                appState.ageGroup = e.target.value;
+                saveStateToStorage();
+                renderEvents();
+            });
+
+            document.getElementById('genderButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#genderButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.gender = e.target.dataset.gender;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            document.getElementById('courseButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#courseButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.courseType = e.target.dataset.course;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            if (appState.courseType) {
+                const courseBtn = document.querySelector(`[data-course="${appState.courseType}"]`);
+                if (courseBtn) courseBtn.classList.add('active');
+            }
+
+            const fastEntryToggle = document.getElementById('fastEntryToggle');
+            fastEntryToggle.checked = appState.fastEntryMode;
+            fastEntryToggle.addEventListener('change', (e) => {
+                appState.fastEntryMode = e.target.checked;
+                saveStateToStorage();
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if (appState.fastEntryMode) input.setAttribute('inputmode', 'numeric');
+                    else input.removeAttribute('inputmode');
+                });
+            });
+
+            document.getElementById('clearTimesBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').showModal();
+            });
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('cancelClearBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('confirmClearBtn').addEventListener('click', () => {
+                appState.times = {};
+                saveStateToStorage();
+                renderEvents();
+                document.getElementById('clearTimesModal').close();
+            });
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            const noteDisplay = document.getElementById('noteDisplay');
+            noteDisplay.textContent = '';
+
+            if (!appState.ageGroup || !appState.gender || !appState.courseType) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏊</div><p>Select age group, gender, and course type to view events.</p></div>';
+                return;
+            }
+
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData || !ageGroupData.genders[appState.gender]) {
+                container.innerHTML = '<div class="empty-state"><p>No events found for selected criteria.</p></div>';
+                return;
+            }
+
+            if (ageGroupData.note) noteDisplay.textContent = ageGroupData.note;
+
+            const events = ageGroupData.genders[appState.gender].events;
+            const course = appState.courseType;
+
+            let tableHTML = `
+                <table class="event-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Time</th>
+                            <th>A</th>
+                            <th>B+</th>
+                            <th>B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            events.forEach(event => {
+                const times = event[course];
+                if (!times || (times.A === null && times['B+'] === null && times.B === null)) return;
+
+                const eventKey = `${appState.gender}_${course}_${event.name}`;
+                const userTime = appState.times[eventKey] || '';
+                const qualification = userTime ? getQualification(userTime, times) : null;
+
+                let rowClass = userTime ? 'has-value' : '';
+                if (hasInvalidStandard(times)) rowClass += ' has-invalid-standard';
+                if (qualification === 'a') rowClass += ' met-a';
+                else if (qualification === 'b-plus') rowClass += ' met-b-plus';
+                else if (qualification === 'b') rowClass += ' met-b';
+
+                const aClass = qualification === 'a' ? 'standard-cell met met-a' : 'standard-cell';
+                const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
+                const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
+                const inputModeAttr = appState.fastEntryMode ? 'inputmode="numeric"' : '';
+
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td>${event.name}</td>
+                        <td>
+                            <input type="text" class="time-input" ${inputModeAttr}
+                                placeholder="mm:ss.ms" data-event-key="${eventKey}"
+                                value="${userTime}" aria-label="Enter time for ${event.name}">
+                        </td>
+                        <td class="${aClass} time-value" data-standard="a" data-event-key="${eventKey}">${times.A || 'n/a'}</td>
+                        <td class="${bPlusClass} time-value" data-standard="b-plus" data-event-key="${eventKey}">${times['B+'] || 'n/a'}</td>
+                        <td class="${bClass} time-value" data-standard="b" data-event-key="${eventKey}">${times.B || 'n/a'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+            setupTimeInputHandlers();
+        }
+
+        function setupTimeInputHandlers() {
+            document.querySelectorAll('.time-input').forEach(input => {
+                let timeout;
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+                    const preventMouseUp = (event) => {
+                        event.preventDefault();
+                        e.target.removeEventListener('mouseup', preventMouseUp);
+                    };
+                    e.target.addEventListener('mouseup', preventMouseUp, { once: true });
+                });
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value.trim();
+                    if (value && !isValidTimeInput(value)) e.target.classList.add('invalid');
+                    else e.target.classList.remove('invalid');
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => handleTimeInput(e.target), 500);
+                });
+                input.addEventListener('blur', (e) => {
+                    clearTimeout(timeout);
+                    handleTimeInput(e.target);
+                });
+            });
+        }
+
+        function isValidTimeInput(value) {
+            if (!value) return true;
+            return /^[0-9:.]+$/.test(value);
+        }
+
+        function parseTimeInput(value) {
+            if (!value) return '';
+            let digits = value.replace(/\D/g, '');
+            digits = digits.replace(/^0+/, '') || '0';
+            if (digits.length === 0) return '';
+            const len = digits.length;
+            if (len === 1) return `00.0${digits}`;
+            if (len === 2) return `00.${digits}`;
+            if (len === 3) return `0${digits[0]}.${digits.slice(1)}`;
+            if (len === 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+            const hundredths = digits.slice(-2);
+            const seconds = digits.slice(-4, -2);
+            const minutes = digits.slice(0, -4);
+            return `${minutes}:${seconds}.${hundredths}`;
+        }
+
+        function handleTimeInput(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            if (value && !isValidTimeInput(value)) {
+                input.classList.add('invalid');
+                delete appState.times[eventKey];
+                saveStateToStorage();
+                updateStandardHighlighting(input);
+                return;
+            }
+            input.classList.remove('invalid');
+            const parsedTime = parseTimeInput(value);
+            const finalTime = parsedTime.substring(0, 9);
+            if (finalTime) {
+                appState.times[eventKey] = finalTime;
+                input.value = finalTime;
+            } else {
+                delete appState.times[eventKey];
+            }
+            saveStateToStorage();
+            updateStandardHighlighting(input);
+        }
+
+        function updateStandardHighlighting(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            const row = input.closest('tr');
+            const standardCells = row.querySelectorAll('.standard-cell');
+            standardCells.forEach(cell => cell.classList.remove('met', 'met-a', 'met-b-plus', 'met-b'));
+            row.classList.remove('met-a', 'met-b-plus', 'met-b');
+            if (value) row.classList.add('has-value');
+            else { row.classList.remove('has-value'); return; }
+            if (input.classList.contains('invalid')) return;
+
+            const [gender, course, eventName] = eventKey.split('_');
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData) return;
+            const event = ageGroupData.genders[gender].events.find(e => e.name === eventName);
+            if (!event) return;
+            const times = event[course];
+            const qualification = getQualification(value, times);
+
+            if (qualification === 'a') {
+                const aCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'a');
+                if (aCell) aCell.classList.add('met', 'met-a');
+                row.classList.add('met-a');
+            } else if (qualification === 'b-plus') {
+                const bPlusCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b-plus');
+                if (bPlusCell) bPlusCell.classList.add('met', 'met-b-plus');
+                row.classList.add('met-b-plus');
+            } else if (qualification === 'b') {
+                const bCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b');
+                if (bCell) bCell.classList.add('met', 'met-b');
+                row.classList.add('met-b');
+            }
+        }
+
+        function getQualification(userTime, standards) {
+            const userSeconds = timeToSeconds(userTime);
+            if (userSeconds === null) return null;
+            const aTime = (standards.A && !standards.A.includes('⚠️')) ? timeToSeconds(standards.A) : null;
+            const bPlusTime = (standards['B+'] && !standards['B+'].includes('⚠️')) ? timeToSeconds(standards['B+']) : null;
+            const bTime = (standards.B && !standards.B.includes('⚠️')) ? timeToSeconds(standards.B) : null;
+            if (aTime !== null && userSeconds <= aTime) return 'a';
+            if (bPlusTime !== null && userSeconds <= bPlusTime) return 'b-plus';
+            if (bTime !== null && userSeconds <= bTime) return 'b';
+            return 'none';
+        }
+
+        function hasInvalidStandard(times) {
+            return (times.A && times.A.includes('⚠️')) ||
+                   (times['B+'] && times['B+'].includes('⚠️')) ||
+                   (times.B && times.B.includes('⚠️'));
+        }
+
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return null;
+            timeStr = timeStr.trim().replace(/[^0-9:.]/g, '');
+            const parts = timeStr.split(':');
+            let minutes = 0, seconds = 0;
+            if (parts.length === 2) {
+                minutes = parseFloat(parts[0]) || 0;
+                seconds = parseFloat(parts[1]) || 0;
+            } else if (parts.length === 1) {
+                seconds = parseFloat(parts[0]) || 0;
+            } else return null;
+            return minutes * 60 + seconds;
+        }
+
+        function setRandomFooterPhrase() {
+            const phrases = [
+                'Made with <span class="heart">❤️</span> in war-torn PDX',
+                'Made with <span class="heart">❤️</span> while PDX is aflame',
+                'Built with <span class="heart">❤️</span> and the bravery to venture into the rough streets of PDX',
+                'Made with <span class="heart">❤️</span> between pickleball games in war-ravaged PDX',
+                'Crafted with <span class="heart">❤️</span> from the front lines of PDX',
+                'Freshly brewed with <span class="heart">❤️</span> and Courier Coffee',
+                'Finely tuned with <span class="heart">❤️</span> and Blue Star donuts',
+                'Bravely coded with <span class="heart">❤️</span> from the epicenter of the PDX war zone',
+                'Banged out with <span class="heart">❤️</span> and used gear from Revival Drums PDX',
+                'Shamelessly sponsored with <span class="heart">❤️</span> by [YOUR COMPANY HERE]'
+            ];
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            const footerElement = document.getElementById('footerPhrase');
+            if (footerElement) footerElement.innerHTML = randomPhrase;
+        }
+
+        loadData();
+        setRandomFooterPhrase();
+    </script>
+</body>
+</html>

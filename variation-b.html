@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swim Check - Oregon Swimming Motivational Times</title>
+    <meta name="description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://swimcheck.org/">
+    <meta property="og:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta property="og:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta property="og:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://swimcheck.org/">
+    <meta name="twitter:title" content="Swim Check - Oregon Swimming Motivational Times">
+    <meta name="twitter:description" content="Look up Oregon Swimming (OSI) motivational time standards. Check your times against A, B+, and B standards.">
+    <meta name="twitter:image" content="https://swimcheck.org/images/social-preview-v2.png">
+
+    <style>
+        /* ============================================================
+           VARIATION B: "Championship Dashboard"
+           Bold navy & gold sport theme, large touch targets,
+           medal-style qualifications, high contrast, competitive feel
+           ============================================================ */
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #0f172a;
+            --navy-mid: #1e293b;
+            --navy-light: #334155;
+            --gold: #eab308;
+            --gold-light: #fef08a;
+            --gold-dark: #a16207;
+
+            --qual-a: #22c55e;
+            --qual-a-bg: #052e16;
+            --qual-bplus: #38bdf8;
+            --qual-bplus-bg: #0c2d48;
+            --qual-b: #fbbf24;
+            --qual-b-bg: #422006;
+
+            --surface-bg: #f8fafc;
+            --surface-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --text-white: #f8fafc;
+            --border: #e2e8f0;
+
+            --radius: 10px;
+            --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--surface-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ---- Header ---- */
+        .app-header {
+            background: var(--navy);
+            color: var(--text-white);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .header-left h1 span {
+            color: var(--gold);
+        }
+
+        .header-left .subtitle {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .season-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 0.25rem 0.65rem;
+            border-radius: 4px;
+        }
+
+        /* ---- Main Container ---- */
+        .main-container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0.75rem;
+        }
+
+        /* ---- Selector Strip ---- */
+        .selector-strip {
+            background: var(--surface-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .selector-strip label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .selector-strip select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface-card);
+            color: var(--text-primary);
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            transition: border-color 0.2s;
+        }
+
+        .selector-strip select:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .selector-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .selector-group label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        /* ---- Segmented Control Buttons ---- */
+        .seg-control {
+            display: flex;
+            background: var(--surface-bg);
+            border-radius: 8px;
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .seg-control button {
+            flex: 1;
+            padding: 0.55rem 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .seg-control button:hover {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        .seg-control button.active {
+            background: var(--navy);
+            color: var(--text-white);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+        }
+
+        /* ---- Note ---- */
+        .note-text {
+            font-size: 0.78rem;
+            font-style: italic;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* ---- Event Table ---- */
+        .event-grid {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--surface-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 0.75rem;
+        }
+
+        .event-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .event-table thead th {
+            background: var(--navy);
+            color: var(--text-white);
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.6rem 0.5rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .event-table thead th:first-child {
+            text-align: left;
+            padding-left: 1rem;
+        }
+
+        /* Medal-style column headers */
+        .event-table thead th[data-col="a"] {
+            background: linear-gradient(135deg, #166534, #15803d);
+        }
+        .event-table thead th[data-col="bplus"] {
+            background: linear-gradient(135deg, #075985, #0369a1);
+        }
+        .event-table thead th[data-col="b"] {
+            background: linear-gradient(135deg, #92400e, #a16207);
+        }
+
+        .event-table tbody td {
+            padding: 0.55rem 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+        }
+
+        .event-table tbody td:first-child {
+            text-align: left;
+            font-weight: 600;
+            padding-left: 1rem;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .event-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .event-table tbody tr:nth-child(even) td {
+            background-color: rgba(248, 250, 252, 0.5);
+        }
+
+        /* Row with entered value */
+        .event-table tr.has-value td {
+            background-color: rgba(15, 23, 42, 0.04) !important;
+        }
+
+        /* Row with invalid standard */
+        .event-table tr.has-invalid-standard td {
+            background-color: #fefce8 !important;
+        }
+
+        /* ---- Time Input ---- */
+        .time-input {
+            width: 100%;
+            min-width: 90px;
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 0.5rem 0.3rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface-card);
+            color: var(--text-primary);
+            transition: all 0.15s ease;
+        }
+
+        .time-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .time-input:focus {
+            outline: none;
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+        }
+
+        .time-input.invalid {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+
+        /* Input borders when standards met */
+        tr.has-value.met-a .time-input {
+            border-color: var(--qual-a);
+            background: #f0fdf4;
+        }
+
+        tr.has-value.met-b-plus .time-input {
+            border-color: var(--qual-bplus);
+            background: #f0f9ff;
+        }
+
+        tr.has-value.met-b .time-input {
+            border-color: var(--qual-b);
+            background: #fffbeb;
+        }
+
+        /* ---- Standard Cells ---- */
+        .standard-cell {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .time-value {
+            font-family: 'SF Mono', 'Cascadia Code', 'Courier New', monospace;
+        }
+
+        .standard-cell.met {
+            font-weight: 800;
+            border-radius: 6px;
+            padding: 0.3rem 0.5rem !important;
+        }
+
+        .standard-cell.met-a {
+            background: var(--qual-a) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b-plus {
+            background: var(--qual-bplus) !important;
+            color: white;
+        }
+
+        .standard-cell.met-b {
+            background: var(--qual-b) !important;
+            color: #422006;
+        }
+
+        /* ---- Empty State ---- */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .empty-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            font-size: 0.9rem;
+        }
+
+        /* ---- Bottom Bar ---- */
+        .bottom-bar {
+            background: var(--surface-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 0.85rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .toggle-label input[type="checkbox"] {
+            width: 2.25rem;
+            height: 1.25rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background: #cbd5e1;
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-label input[type="checkbox"]::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(1.25rem - 4px);
+            height: calc(1.25rem - 4px);
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+
+        .toggle-label input[type="checkbox"]:checked {
+            background: var(--navy);
+        }
+
+        .toggle-label input[type="checkbox"]:checked::after {
+            transform: translateX(1rem);
+        }
+
+        .clear-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #ef4444;
+            background: #fef2f2;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .clear-btn:hover {
+            background: #fee2e2;
+        }
+
+        /* ---- Tips ---- */
+        .tips {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .tips a {
+            color: var(--navy-light);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        /* ---- Footer ---- */
+        .app-footer {
+            text-align: center;
+            padding: 1.25rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 2px solid var(--navy);
+        }
+
+        .footer-phrase {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-phrase .heart {
+            color: #ef4444;
+        }
+
+        .footer-support {
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .footer-support strong {
+            color: var(--text-primary);
+        }
+
+        .footer-support a {
+            color: var(--navy-light);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .footer-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+
+        /* ---- Modal ---- */
+        dialog {
+            border: none;
+            border-radius: var(--radius);
+            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.25);
+            max-width: 380px;
+            width: 90%;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        dialog::backdrop {
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        dialog article {
+            padding: 0;
+        }
+
+        dialog header {
+            background: var(--navy);
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        dialog header p {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        dialog header button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+        }
+
+        dialog > article > p {
+            padding: 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        dialog footer {
+            padding: 0 1.25rem 1.25rem;
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        dialog footer button {
+            padding: 0.6rem 1.25rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+        }
+
+        dialog footer .secondary {
+            background: var(--surface-bg);
+            color: var(--text-secondary);
+        }
+
+        dialog footer button:not(.secondary) {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 480px) {
+            .app-header {
+                padding: 1rem;
+            }
+
+            .header-left h1 {
+                font-size: 1.15rem;
+            }
+
+            .selector-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .event-table {
+                font-size: 0.8rem;
+            }
+
+            .time-input {
+                min-width: 80px;
+                font-size: 0.8rem;
+                padding: 0.4rem 0.2rem;
+            }
+        }
+    </style>
+    <script data-goatcounter="https://ironprogrammer.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="405f9ef9-9a18-4ad2-9051-2fc5fd905872"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <h1>Swim<span>Check</span></h1>
+            <div class="subtitle">Motivational Times Lookup</div>
+        </div>
+        <div class="header-right">
+            <span class="season-badge" id="seasonInfo">Loading...</span>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Selector Strip -->
+        <div class="selector-strip">
+            <label for="ageGroupSelect">Age Group</label>
+            <select id="ageGroupSelect" aria-label="Select age group">
+                <option value="">Select Age Group</option>
+            </select>
+
+            <div class="selector-row">
+                <div class="selector-group">
+                    <label>Gender</label>
+                    <div class="seg-control" id="genderButtons" role="group" aria-label="Select gender">
+                    </div>
+                </div>
+                <div class="selector-group">
+                    <label>Course</label>
+                    <div class="seg-control" id="courseButtons" role="group" aria-label="Select course type">
+                        <button type="button" data-course="SCY">SCY</button>
+                        <button type="button" data-course="SCM">SCM</button>
+                        <button type="button" data-course="LCM">LCM</button>
+                    </div>
+                </div>
+            </div>
+            <div id="noteDisplay" class="note-text"></div>
+        </div>
+
+        <!-- Event Grid -->
+        <div class="event-grid">
+            <div id="eventsContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">🏅</div>
+                    <p>Select age group, gender, and course to view time standards.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="bottom-bar">
+            <label class="toggle-label">
+                <input type="checkbox" id="fastEntryToggle" />
+                Fast entry
+            </label>
+            <button type="button" id="clearTimesBtn" class="clear-btn">Clear All</button>
+        </div>
+
+        <div class="tips">
+            Rotate to landscape for a wider table view.<br>
+            Times with ⚠️ have source data issues
+            (<a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">details</a>).
+        </div>
+
+        <!-- Clear Times Modal -->
+        <dialog id="clearTimesModal">
+            <article>
+                <header>
+                    <p><strong>Clear all times</strong></p>
+                    <button aria-label="Close" id="closeModalBtn">&times;</button>
+                </header>
+                <p>Are you sure you want to clear all entered times? This cannot be undone.</p>
+                <footer>
+                    <button type="button" class="secondary" id="cancelClearBtn">Cancel</button>
+                    <button type="button" id="confirmClearBtn">Clear all times</button>
+                </footer>
+            </article>
+        </dialog>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p class="footer-phrase" id="footerPhrase">Made with <span class="heart">❤️</span> in war-torn PDX</p>
+            <div class="footer-support">
+                <p><strong>Find Swim Check useful?</strong><br>
+                <a href="https://github.com/ironprogrammer/swimcheck" target="_blank" rel="noopener noreferrer">Contribute on GitHub</a> or buy me a coffee!</p>
+            </div>
+            <div class="footer-buttons">
+                <a href="https://www.buymeacoffee.com/ironprogrammer" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;"></a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Constants
+        const CURRENT_DATA_VERSION = 2;
+
+        // App state
+        let swimData = null;
+        let appState = {
+            ageGroup: null,
+            gender: null,
+            courseType: 'SCY',
+            times: {},
+            dataVersion: CURRENT_DATA_VERSION,
+            fastEntryMode: false,
+            lastModified: null
+        };
+
+        async function loadData() {
+            try {
+                let response = await fetch('swim_time_standards.json');
+                if (!response.ok) {
+                    response = await fetch('https://swimcheck.org/swim_time_standards.json');
+                }
+                swimData = await response.json();
+                document.getElementById('seasonInfo').textContent = swimData.title;
+                initializeApp();
+            } catch (error) {
+                console.error('Failed to load swim data:', error);
+                document.getElementById('seasonInfo').textContent = 'Error loading data';
+            }
+        }
+
+        function initializeApp() {
+            initializeState();
+            populateAgeGroups();
+            populateGenderButtons();
+            setupEventListeners();
+            renderEvents();
+        }
+
+        function saveStateToStorage() {
+            appState.lastModified = Date.now();
+            localStorage.setItem('swimCheckState', JSON.stringify(appState));
+            updateURLFragment();
+        }
+
+        function loadStateFromStorage() {
+            const saved = localStorage.getItem('swimCheckState');
+            if (!saved) return null;
+            try { return JSON.parse(saved); }
+            catch (e) { console.error('Failed to parse localStorage:', e); return null; }
+        }
+
+        function migrateOldTimeKeys() {
+            if (appState.dataVersion >= CURRENT_DATA_VERSION) return;
+            if (!appState.times || Object.keys(appState.times).length === 0) {
+                appState.dataVersion = CURRENT_DATA_VERSION;
+                saveStateToStorage();
+                return;
+            }
+            const newTimes = {};
+            let migrated = false;
+            for (const [key, value] of Object.entries(appState.times)) {
+                const underscoreCount = (key.match(/_/g) || []).length;
+                if (underscoreCount === 3) {
+                    const parts = key.split('_');
+                    newTimes[parts.slice(1).join('_')] = value;
+                    migrated = true;
+                } else {
+                    newTimes[key] = value;
+                }
+            }
+            appState.times = newTimes;
+            appState.dataVersion = CURRENT_DATA_VERSION;
+            saveStateToStorage();
+            if (migrated) console.log(`Migrated time keys to v${CURRENT_DATA_VERSION}`);
+        }
+
+        function encodeStateToFragment(state) {
+            try {
+                const base64 = btoa(JSON.stringify(state));
+                return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            } catch (e) { return null; }
+        }
+
+        function decodeFragmentToState(fragment) {
+            try {
+                fragment = fragment.replace(/^#/, '');
+                if (!fragment) return null;
+                let base64 = fragment.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) base64 += '=';
+                const state = JSON.parse(atob(base64));
+                if (typeof state !== 'object' || !state.dataVersion) return null;
+                return state;
+            } catch (e) { return null; }
+        }
+
+        let urlUpdateTimeout = null;
+        function updateURLFragment() {
+            clearTimeout(urlUpdateTimeout);
+            urlUpdateTimeout = setTimeout(() => {
+                const fragment = encodeStateToFragment(appState);
+                if (fragment) history.replaceState(null, '', '#' + fragment);
+            }, 1500);
+        }
+
+        function loadStateFromFragment() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#') return null;
+            return decodeFragmentToState(hash);
+        }
+
+        function initializeState() {
+            const localState = loadStateFromStorage();
+            const fragmentState = loadStateFromFragment();
+            let sourceUsed = 'default';
+
+            if (localState && fragmentState) {
+                const localTime = localState.lastModified || 0;
+                const fragmentTime = fragmentState.lastModified || 0;
+                const localHasTimes = localState.times && Object.keys(localState.times).length > 0;
+                const fragmentHasTimes = fragmentState.times && Object.keys(fragmentState.times).length > 0;
+
+                if (localTime === 0 && fragmentTime > 0) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else if (fragmentHasTimes && !localHasTimes) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else if (localHasTimes && !fragmentHasTimes) {
+                    appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+                } else if (fragmentTime > localTime) {
+                    appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+                } else {
+                    appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+                }
+            } else if (fragmentState) {
+                appState = { ...appState, ...fragmentState }; sourceUsed = 'url-fragment'; saveStateToStorage();
+            } else if (localState) {
+                appState = { ...appState, ...localState }; sourceUsed = 'localStorage'; updateURLFragment();
+            } else {
+                sourceUsed = 'defaults'; updateURLFragment();
+            }
+            console.log(`State loaded from: ${sourceUsed}`);
+            migrateOldTimeKeys();
+        }
+
+        function populateAgeGroups() {
+            const select = document.getElementById('ageGroupSelect');
+            swimData.ageGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.age;
+                option.textContent = group.age;
+                select.appendChild(option);
+            });
+            if (appState.ageGroup) select.value = appState.ageGroup;
+        }
+
+        function populateGenderButtons() {
+            const container = document.getElementById('genderButtons');
+            const genders = new Set();
+            swimData.ageGroups.forEach(group => {
+                Object.keys(group.genders).forEach(gender => genders.add(gender));
+            });
+            genders.forEach(gender => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = gender;
+                button.dataset.gender = gender;
+                if (appState.gender === gender) button.classList.add('active');
+                container.appendChild(button);
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('ageGroupSelect').addEventListener('change', (e) => {
+                appState.ageGroup = e.target.value;
+                saveStateToStorage();
+                renderEvents();
+            });
+
+            document.getElementById('genderButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#genderButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.gender = e.target.dataset.gender;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            document.getElementById('courseButtons').addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    document.querySelectorAll('#courseButtons button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    appState.courseType = e.target.dataset.course;
+                    saveStateToStorage();
+                    renderEvents();
+                }
+            });
+
+            if (appState.courseType) {
+                const courseBtn = document.querySelector(`[data-course="${appState.courseType}"]`);
+                if (courseBtn) courseBtn.classList.add('active');
+            }
+
+            const fastEntryToggle = document.getElementById('fastEntryToggle');
+            fastEntryToggle.checked = appState.fastEntryMode;
+            fastEntryToggle.addEventListener('change', (e) => {
+                appState.fastEntryMode = e.target.checked;
+                saveStateToStorage();
+                document.querySelectorAll('.time-input').forEach(input => {
+                    if (appState.fastEntryMode) input.setAttribute('inputmode', 'numeric');
+                    else input.removeAttribute('inputmode');
+                });
+            });
+
+            document.getElementById('clearTimesBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').showModal();
+            });
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('cancelClearBtn').addEventListener('click', () => {
+                document.getElementById('clearTimesModal').close();
+            });
+            document.getElementById('confirmClearBtn').addEventListener('click', () => {
+                appState.times = {};
+                saveStateToStorage();
+                renderEvents();
+                document.getElementById('clearTimesModal').close();
+            });
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            const noteDisplay = document.getElementById('noteDisplay');
+            noteDisplay.textContent = '';
+
+            if (!appState.ageGroup || !appState.gender || !appState.courseType) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏅</div><p>Select age group, gender, and course to view time standards.</p></div>';
+                return;
+            }
+
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData || !ageGroupData.genders[appState.gender]) {
+                container.innerHTML = '<div class="empty-state"><p>No events found for selected criteria.</p></div>';
+                return;
+            }
+
+            if (ageGroupData.note) noteDisplay.textContent = ageGroupData.note;
+
+            const events = ageGroupData.genders[appState.gender].events;
+            const course = appState.courseType;
+
+            let tableHTML = `
+                <table class="event-table">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Time</th>
+                            <th data-col="a">A</th>
+                            <th data-col="bplus">B+</th>
+                            <th data-col="b">B</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            events.forEach(event => {
+                const times = event[course];
+                if (!times || (times.A === null && times['B+'] === null && times.B === null)) return;
+
+                const eventKey = `${appState.gender}_${course}_${event.name}`;
+                const userTime = appState.times[eventKey] || '';
+                const qualification = userTime ? getQualification(userTime, times) : null;
+
+                let rowClass = userTime ? 'has-value' : '';
+                if (hasInvalidStandard(times)) rowClass += ' has-invalid-standard';
+                if (qualification === 'a') rowClass += ' met-a';
+                else if (qualification === 'b-plus') rowClass += ' met-b-plus';
+                else if (qualification === 'b') rowClass += ' met-b';
+
+                const aClass = qualification === 'a' ? 'standard-cell met met-a' : 'standard-cell';
+                const bPlusClass = qualification === 'b-plus' ? 'standard-cell met met-b-plus' : 'standard-cell';
+                const bClass = qualification === 'b' ? 'standard-cell met met-b' : 'standard-cell';
+                const inputModeAttr = appState.fastEntryMode ? 'inputmode="numeric"' : '';
+
+                tableHTML += `
+                    <tr class="${rowClass}">
+                        <td>${event.name}</td>
+                        <td>
+                            <input type="text" class="time-input" ${inputModeAttr}
+                                placeholder="mm:ss.ms" data-event-key="${eventKey}"
+                                value="${userTime}" aria-label="Enter time for ${event.name}">
+                        </td>
+                        <td class="${aClass} time-value" data-standard="a" data-event-key="${eventKey}">${times.A || 'n/a'}</td>
+                        <td class="${bPlusClass} time-value" data-standard="b-plus" data-event-key="${eventKey}">${times['B+'] || 'n/a'}</td>
+                        <td class="${bClass} time-value" data-standard="b" data-event-key="${eventKey}">${times.B || 'n/a'}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            container.innerHTML = tableHTML;
+            setupTimeInputHandlers();
+        }
+
+        function setupTimeInputHandlers() {
+            document.querySelectorAll('.time-input').forEach(input => {
+                let timeout;
+                input.addEventListener('focus', (e) => {
+                    e.target.select();
+                    const preventMouseUp = (event) => { event.preventDefault(); e.target.removeEventListener('mouseup', preventMouseUp); };
+                    e.target.addEventListener('mouseup', preventMouseUp, { once: true });
+                });
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value.trim();
+                    if (value && !isValidTimeInput(value)) e.target.classList.add('invalid');
+                    else e.target.classList.remove('invalid');
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => handleTimeInput(e.target), 500);
+                });
+                input.addEventListener('blur', (e) => { clearTimeout(timeout); handleTimeInput(e.target); });
+            });
+        }
+
+        function isValidTimeInput(value) {
+            if (!value) return true;
+            return /^[0-9:.]+$/.test(value);
+        }
+
+        function parseTimeInput(value) {
+            if (!value) return '';
+            let digits = value.replace(/\D/g, '');
+            digits = digits.replace(/^0+/, '') || '0';
+            if (digits.length === 0) return '';
+            const len = digits.length;
+            if (len === 1) return `00.0${digits}`;
+            if (len === 2) return `00.${digits}`;
+            if (len === 3) return `0${digits[0]}.${digits.slice(1)}`;
+            if (len === 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+            const hundredths = digits.slice(-2);
+            const seconds = digits.slice(-4, -2);
+            const minutes = digits.slice(0, -4);
+            return `${minutes}:${seconds}.${hundredths}`;
+        }
+
+        function handleTimeInput(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            if (value && !isValidTimeInput(value)) {
+                input.classList.add('invalid');
+                delete appState.times[eventKey];
+                saveStateToStorage();
+                updateStandardHighlighting(input);
+                return;
+            }
+            input.classList.remove('invalid');
+            const parsedTime = parseTimeInput(value);
+            const finalTime = parsedTime.substring(0, 9);
+            if (finalTime) { appState.times[eventKey] = finalTime; input.value = finalTime; }
+            else { delete appState.times[eventKey]; }
+            saveStateToStorage();
+            updateStandardHighlighting(input);
+        }
+
+        function updateStandardHighlighting(input) {
+            const eventKey = input.dataset.eventKey;
+            const value = input.value.trim();
+            const row = input.closest('tr');
+            const standardCells = row.querySelectorAll('.standard-cell');
+            standardCells.forEach(cell => cell.classList.remove('met', 'met-a', 'met-b-plus', 'met-b'));
+            row.classList.remove('met-a', 'met-b-plus', 'met-b');
+            if (value) row.classList.add('has-value');
+            else { row.classList.remove('has-value'); return; }
+            if (input.classList.contains('invalid')) return;
+
+            const [gender, course, eventName] = eventKey.split('_');
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData) return;
+            const event = ageGroupData.genders[gender].events.find(e => e.name === eventName);
+            if (!event) return;
+            const times = event[course];
+            const qualification = getQualification(value, times);
+
+            if (qualification === 'a') {
+                const aCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'a');
+                if (aCell) aCell.classList.add('met', 'met-a');
+                row.classList.add('met-a');
+            } else if (qualification === 'b-plus') {
+                const bPlusCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b-plus');
+                if (bPlusCell) bPlusCell.classList.add('met', 'met-b-plus');
+                row.classList.add('met-b-plus');
+            } else if (qualification === 'b') {
+                const bCell = Array.from(standardCells).find(cell => cell.dataset.standard === 'b');
+                if (bCell) bCell.classList.add('met', 'met-b');
+                row.classList.add('met-b');
+            }
+        }
+
+        function getQualification(userTime, standards) {
+            const userSeconds = timeToSeconds(userTime);
+            if (userSeconds === null) return null;
+            const aTime = (standards.A && !standards.A.includes('⚠️')) ? timeToSeconds(standards.A) : null;
+            const bPlusTime = (standards['B+'] && !standards['B+'].includes('⚠️')) ? timeToSeconds(standards['B+']) : null;
+            const bTime = (standards.B && !standards.B.includes('⚠️')) ? timeToSeconds(standards.B) : null;
+            if (aTime !== null && userSeconds <= aTime) return 'a';
+            if (bPlusTime !== null && userSeconds <= bPlusTime) return 'b-plus';
+            if (bTime !== null && userSeconds <= bTime) return 'b';
+            return 'none';
+        }
+
+        function hasInvalidStandard(times) {
+            return (times.A && times.A.includes('⚠️')) || (times['B+'] && times['B+'].includes('⚠️')) || (times.B && times.B.includes('⚠️'));
+        }
+
+        function timeToSeconds(timeStr) {
+            if (!timeStr) return null;
+            timeStr = timeStr.trim().replace(/[^0-9:.]/g, '');
+            const parts = timeStr.split(':');
+            let minutes = 0, seconds = 0;
+            if (parts.length === 2) { minutes = parseFloat(parts[0]) || 0; seconds = parseFloat(parts[1]) || 0; }
+            else if (parts.length === 1) { seconds = parseFloat(parts[0]) || 0; }
+            else return null;
+            return minutes * 60 + seconds;
+        }
+
+        function setRandomFooterPhrase() {
+            const phrases = [
+                'Made with <span class="heart">❤️</span> in war-torn PDX',
+                'Made with <span class="heart">❤️</span> while PDX is aflame',
+                'Built with <span class="heart">❤️</span> and the bravery to venture into the rough streets of PDX',
+                'Made with <span class="heart">❤️</span> between pickleball games in war-ravaged PDX',
+                'Crafted with <span class="heart">❤️</span> from the front lines of PDX',
+                'Freshly brewed with <span class="heart">❤️</span> and Courier Coffee',
+                'Finely tuned with <span class="heart">❤️</span> and Blue Star donuts',
+                'Bravely coded with <span class="heart">❤️</span> from the epicenter of the PDX war zone',
+                'Banged out with <span class="heart">❤️</span> and used gear from Revival Drums PDX',
+                'Shamelessly sponsored with <span class="heart">❤️</span> by [YOUR COMPANY HERE]'
+            ];
+            const footerElement = document.getElementById('footerPhrase');
+            if (footerElement) footerElement.innerHTML = phrases[Math.floor(Math.random() * phrases.length)];
+        }
+
+        loadData();
+        setRandomFooterPhrase();
+    </script>
+</body>
+</html>
