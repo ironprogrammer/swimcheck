@@ -262,6 +262,39 @@
             border-radius: 0 var(--radius-md) 0 0;
         }
 
+        /* Sticky first two columns (Event + Time) */
+        .event-table th:first-child,
+        .event-table td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 3;
+            background: var(--surface-card);
+        }
+
+        .event-table th:nth-child(2),
+        .event-table td:nth-child(2) {
+            position: sticky;
+            z-index: 3;
+            background: var(--surface-card);
+        }
+
+        .event-table thead th:first-child {
+            background: var(--pool-deep);
+            z-index: 13;
+        }
+
+        .event-table thead th:nth-child(2) {
+            background: var(--pool-deep);
+            z-index: 13;
+        }
+
+        /* Freeze-line shadow on the last sticky column */
+        .event-table th:nth-child(2),
+        .event-table td:nth-child(2) {
+            position: sticky;
+            border-right: 2px solid var(--border-light);
+        }
+
         .event-table tbody td {
             padding: 0.5rem;
             text-align: center;
@@ -274,6 +307,18 @@
             font-weight: 600;
             color: var(--text-primary);
             font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Sticky cell backgrounds must stay opaque for row highlights */
+        .event-table tr.has-value td:first-child,
+        .event-table tr.has-value td:nth-child(2) {
+            background-color: #eef7fb;
+        }
+
+        .event-table tr.has-invalid-standard td:first-child,
+        .event-table tr.has-invalid-standard td:nth-child(2) {
+            background-color: #fffbeb;
         }
 
         .event-table tbody tr:last-child td {
@@ -1033,6 +1078,16 @@
             tableHTML += '</tbody></table>';
             container.innerHTML = tableHTML;
             setupTimeInputHandlers();
+            setupStickyColumns();
+        }
+
+        function setupStickyColumns() {
+            const firstTh = document.querySelector('.event-table thead th:first-child');
+            if (!firstTh) return;
+            const leftOffset = firstTh.offsetWidth;
+            document.querySelectorAll('.event-table th:nth-child(2), .event-table td:nth-child(2)').forEach(cell => {
+                cell.style.left = leftOffset + 'px';
+            });
         }
 
         function setupTimeInputHandlers() {

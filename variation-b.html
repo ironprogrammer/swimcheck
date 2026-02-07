@@ -231,7 +231,8 @@
 
         .event-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             font-size: 0.9rem;
         }
 
@@ -266,6 +267,34 @@
             background: linear-gradient(135deg, #92400e, #a16207);
         }
 
+        /* Sticky first two columns (Event + Time) */
+        .event-table th:first-child,
+        .event-table td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 3;
+            background: var(--surface-card);
+        }
+
+        .event-table th:nth-child(2),
+        .event-table td:nth-child(2) {
+            position: sticky;
+            z-index: 3;
+            background: var(--surface-card);
+        }
+
+        .event-table thead th:first-child,
+        .event-table thead th:nth-child(2) {
+            background: var(--navy);
+            z-index: 13;
+        }
+
+        /* Freeze-line border on the last sticky column */
+        .event-table th:nth-child(2),
+        .event-table td:nth-child(2) {
+            border-right: 2px solid var(--border);
+        }
+
         .event-table tbody td {
             padding: 0.55rem 0.5rem;
             text-align: center;
@@ -279,6 +308,22 @@
             padding-left: 1rem;
             font-size: 0.9rem;
             white-space: nowrap;
+        }
+
+        /* Sticky cell backgrounds stay opaque for row highlights */
+        .event-table tr.has-value td:first-child,
+        .event-table tr.has-value td:nth-child(2) {
+            background-color: #f3f4f6 !important;
+        }
+
+        .event-table tr.has-invalid-standard td:first-child,
+        .event-table tr.has-invalid-standard td:nth-child(2) {
+            background-color: #fefce8 !important;
+        }
+
+        .event-table tbody tr:nth-child(even) td:first-child,
+        .event-table tbody tr:nth-child(even) td:nth-child(2) {
+            background-color: #fbfcfd;
         }
 
         .event-table tbody tr:last-child td {
@@ -1023,6 +1068,16 @@
             tableHTML += '</tbody></table>';
             container.innerHTML = tableHTML;
             setupTimeInputHandlers();
+            setupStickyColumns();
+        }
+
+        function setupStickyColumns() {
+            const firstTh = document.querySelector('.event-table thead th:first-child');
+            if (!firstTh) return;
+            const leftOffset = firstTh.offsetWidth;
+            document.querySelectorAll('.event-table th:nth-child(2), .event-table td:nth-child(2)').forEach(cell => {
+                cell.style.left = leftOffset + 'px';
+            });
         }
 
         function setupTimeInputHandlers() {
