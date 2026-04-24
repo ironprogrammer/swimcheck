@@ -226,6 +226,75 @@
             margin-top: 1rem;
         }
 
+        /* Event filter panel */
+        #eventFilterDetails {
+            margin-bottom: 1rem;
+            border: 1px solid var(--pico-muted-border-color);
+            border-radius: var(--pico-border-radius);
+            padding: 0.75rem 1rem;
+        }
+
+        #eventFilterDetails summary {
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+            margin-bottom: 0;
+            list-style: none;
+        }
+
+        #eventFilterDetails summary::before {
+            content: '▶ ';
+            font-size: 0.7em;
+            vertical-align: middle;
+        }
+
+        #eventFilterDetails[open] summary::before {
+            content: '▼ ';
+        }
+
+        #eventFilterDetails[open] summary {
+            margin-bottom: 0.75rem;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-actions button {
+            padding: 0.3rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .filter-event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.25rem 1rem;
+        }
+
+        .filter-event-grid label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .filter-hidden-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--pico-primary-background);
+            color: white;
+            border-radius: 1rem;
+            padding: 0.1rem 0.5rem;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
     </style>
     <script data-goatcounter="https://ironprogrammer.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -256,6 +325,15 @@
                 <button type="button" class="secondary" data-course="SCM">SCM</button>
                 <button type="button" class="secondary" data-course="LCM">LCM</button>
             </div>
+
+            <details id="eventFilterDetails">
+                <summary id="eventFilterSummary">Filter Events</summary>
+                <div class="filter-actions">
+                    <button type="button" class="secondary" id="filterShowAll">Show all</button>
+                    <button type="button" class="secondary" id="filterHideAll">Hide all</button>
+                </div>
+                <div id="eventFilterCheckboxes" class="filter-event-grid"></div>
+            </details>
 
             <div id="noteDisplay" class="note-text"></div>
         </section>
@@ -325,6 +403,7 @@
             gender: null,
             courseType: 'SCY',
             times: {},
+            hiddenEvents: [],
             dataVersion: CURRENT_DATA_VERSION,
             fastEntryMode: false,
             lastModified: null
@@ -356,6 +435,7 @@
             populateAgeGroups();
             populateGenderButtons();
             setupEventListeners();
+            renderEventFilter();
             renderEvents();
         }
 
@@ -602,6 +682,7 @@
             document.getElementById('ageGroupSelect').addEventListener('change', (e) => {
                 appState.ageGroup = e.target.value;
                 saveStateToStorage();
+                renderEventFilter();
                 renderEvents();
             });
 
@@ -616,6 +697,7 @@
                     e.target.classList.remove('secondary');
                     appState.gender = e.target.dataset.gender;
                     saveStateToStorage();
+                    renderEventFilter();
                     renderEvents();
                 }
             });
@@ -631,6 +713,7 @@
                     e.target.classList.remove('secondary');
                     appState.courseType = e.target.dataset.course;
                     saveStateToStorage();
+                    renderEventFilter();
                     renderEvents();
                 }
             });
@@ -659,6 +742,31 @@
                         input.removeAttribute('inputmode');
                     }
                 });
+            });
+
+            // Filter: show all events
+            document.getElementById('filterShowAll').addEventListener('click', () => {
+                appState.hiddenEvents = [];
+                saveStateToStorage();
+                renderEventFilter();
+                renderEvents();
+            });
+
+            // Filter: hide all visible events
+            document.getElementById('filterHideAll').addEventListener('click', () => {
+                if (!appState.ageGroup || !appState.gender || !appState.courseType) return;
+                const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+                if (!ageGroupData || !ageGroupData.genders[appState.gender]) return;
+                const course = appState.courseType;
+                appState.hiddenEvents = ageGroupData.genders[appState.gender].events
+                    .filter(e => {
+                        const times = e[course];
+                        return times && !(times.A === null && times['B+'] === null && times.B === null);
+                    })
+                    .map(e => e.name);
+                saveStateToStorage();
+                renderEventFilter();
+                renderEvents();
             });
 
             // Clear times button - show modal
@@ -707,7 +815,10 @@
                 noteDisplay.textContent = ageGroupData.note;
             }
 
-            const events = ageGroupData.genders[appState.gender].events;
+            const hiddenEvents = appState.hiddenEvents || [];
+            const events = ageGroupData.genders[appState.gender].events.filter(
+                e => !hiddenEvents.includes(e.name)
+            );
             const course = appState.courseType;
 
             let tableHTML = `
@@ -796,6 +907,74 @@
 
             // Setup time input handlers
             setupTimeInputHandlers();
+        }
+
+        // Render event filter checkboxes for the current selection
+        function renderEventFilter() {
+            const checkboxContainer = document.getElementById('eventFilterCheckboxes');
+            if (!checkboxContainer) return;
+
+            if (!appState.hiddenEvents) appState.hiddenEvents = [];
+
+            if (!appState.ageGroup || !appState.gender || !appState.courseType) {
+                checkboxContainer.innerHTML = '<p style="color: var(--pico-muted-color); font-size: 0.85rem; margin: 0;">Select age group, gender, and course type first.</p>';
+                updateFilterSummary();
+                return;
+            }
+
+            const ageGroupData = swimData.ageGroups.find(g => g.age === appState.ageGroup);
+            if (!ageGroupData || !ageGroupData.genders[appState.gender]) {
+                checkboxContainer.innerHTML = '';
+                updateFilterSummary();
+                return;
+            }
+
+            const course = appState.courseType;
+            const events = ageGroupData.genders[appState.gender].events.filter(e => {
+                const times = e[course];
+                return times && !(times.A === null && times['B+'] === null && times.B === null);
+            });
+
+            let html = '';
+            events.forEach(event => {
+                const isHidden = appState.hiddenEvents.includes(event.name);
+                const checkboxId = `filter-${event.name.replace(/\s+/g, '-')}`;
+                html += `
+                    <label for="${checkboxId}">
+                        <input type="checkbox" id="${checkboxId}" data-event-name="${event.name}" ${isHidden ? '' : 'checked'}>
+                        ${event.name}
+                    </label>
+                `;
+            });
+
+            checkboxContainer.innerHTML = html;
+
+            checkboxContainer.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const eventName = e.target.dataset.eventName;
+                    if (e.target.checked) {
+                        appState.hiddenEvents = appState.hiddenEvents.filter(n => n !== eventName);
+                    } else {
+                        if (!appState.hiddenEvents.includes(eventName)) {
+                            appState.hiddenEvents.push(eventName);
+                        }
+                    }
+                    saveStateToStorage();
+                    renderEvents();
+                    updateFilterSummary();
+                });
+            });
+
+            updateFilterSummary();
+        }
+
+        // Update the filter summary text with hidden event count badge
+        function updateFilterSummary() {
+            const summary = document.getElementById('eventFilterSummary');
+            if (!summary) return;
+            const count = (appState.hiddenEvents || []).length;
+            const badge = count > 0 ? `<span class="filter-hidden-badge">${count} hidden</span>` : '';
+            summary.innerHTML = `Filter Events${badge}`;
         }
 
         // Setup time input event handlers
