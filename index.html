@@ -262,6 +262,12 @@
 
         <!-- Event Grid Section -->
         <section class="event-grid">
+            <div id="timedFilterToggle" style="display: none; margin-bottom: 1rem;">
+                <label>
+                    <input type="checkbox" id="showTimedOnlyToggle" role="switch" />
+                    Show timed events only
+                </label>
+            </div>
             <div id="eventsContainer">
                 <p style="text-align: center; color: var(--pico-muted-color);">
                     Please select age group, gender, and course type to view events.
@@ -320,6 +326,7 @@
 
         // App state
         let swimData = null;
+        let showTimedOnly = false;
         let appState = {
             ageGroup: null,
             gender: null,
@@ -644,6 +651,12 @@
                 }
             }
 
+            // Show timed only toggle
+            document.getElementById('showTimedOnlyToggle').addEventListener('change', (e) => {
+                showTimedOnly = e.target.checked;
+                applyTimedFilter();
+            });
+
             // Fast entry mode toggle
             const fastEntryToggle = document.getElementById('fastEntryToggle');
             fastEntryToggle.checked = appState.fastEntryMode;
@@ -693,6 +706,7 @@
 
             if (!appState.ageGroup || !appState.gender || !appState.courseType) {
                 container.innerHTML = '<p style="text-align: center; color: var(--pico-muted-color);">Please select age group, gender, and course type to view events.</p>';
+                document.getElementById('timedFilterToggle').style.display = 'none';
                 return;
             }
 
@@ -794,8 +808,9 @@
 
             container.innerHTML = tableHTML;
 
-            // Setup time input handlers
+            document.getElementById('timedFilterToggle').style.display = '';
             setupTimeInputHandlers();
+            applyTimedFilter();
         }
 
         // Setup time input event handlers
@@ -976,6 +991,16 @@
                 row.classList.add('met-b');
             }
             // If qualification === 'none', just the row gray background shows (no cell highlighting)
+
+            applyTimedFilter();
+        }
+
+        // Apply timed-only filter to table rows
+        function applyTimedFilter() {
+            document.querySelectorAll('.event-table tbody tr').forEach(row => {
+                const input = row.querySelector('.time-input');
+                row.style.display = (showTimedOnly && input && !input.value.trim()) ? 'none' : '';
+            });
         }
 
         // Get qualification level (returns 'a', 'b-plus', 'b', or 'none')
