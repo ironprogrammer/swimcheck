@@ -326,7 +326,6 @@
 
         // App state
         let swimData = null;
-        let showTimedOnly = false;
         let appState = {
             ageGroup: null,
             gender: null,
@@ -334,6 +333,7 @@
             times: {},
             dataVersion: CURRENT_DATA_VERSION,
             fastEntryMode: false,
+            showTimedOnly: false,
             lastModified: null
         };
 
@@ -652,8 +652,11 @@
             }
 
             // Show timed only toggle
-            document.getElementById('showTimedOnlyToggle').addEventListener('change', (e) => {
-                showTimedOnly = e.target.checked;
+            const showTimedOnlyToggle = document.getElementById('showTimedOnlyToggle');
+            showTimedOnlyToggle.checked = appState.showTimedOnly;
+            showTimedOnlyToggle.addEventListener('change', (e) => {
+                appState.showTimedOnly = e.target.checked;
+                saveStateToStorage();
                 applyTimedFilter();
             });
 
@@ -999,7 +1002,7 @@
         function applyTimedFilter() {
             document.querySelectorAll('.event-table tbody tr').forEach(row => {
                 const input = row.querySelector('.time-input');
-                row.style.display = (showTimedOnly && input && !input.value.trim()) ? 'none' : '';
+                row.style.display = (appState.showTimedOnly && input && !input.value.trim()) ? 'none' : '';
             });
         }
 
