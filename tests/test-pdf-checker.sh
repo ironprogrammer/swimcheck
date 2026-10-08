@@ -29,6 +29,7 @@ run_test() {
     local test_name="$1"
     local fixture_file="$2"
     local expected_exit_code="$3"
+    local page_file="${4:-$PAGE_FIXTURE}"
 
     echo -e "${BLUE}------------------------------------------------${NC}"
     echo -e "${BLUE}Test: $test_name${NC}"
@@ -37,7 +38,7 @@ run_test() {
 
     # Run the script against the local page fixture and capture exit code
     set +e
-    node "$CHECK_SCRIPT" "$fixture_file" "$PAGE_FIXTURE"
+    node "$CHECK_SCRIPT" "$fixture_file" "$page_file"
     actual_exit_code=$?
     set -e
 
@@ -73,6 +74,12 @@ run_test "URL changed for same year (data correction)" \
 run_test "Unreadable input reports an error" \
     "$FIXTURES_DIR/does-not-exist.json" \
     2
+
+# Test 5: A page with no OSI links is an error, not a quiet "no change"
+run_test "Page with no OSI links reports an error" \
+    "$FIXTURES_DIR/current-version.json" \
+    2 \
+    "$FIXTURES_DIR/osi-page-no-links.html"
 
 # Summary
 echo -e "${GREEN}================================================${NC}"
