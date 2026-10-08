@@ -6,9 +6,16 @@
  * against the stored data in swim_time_standards.json
  *
  * Usage:
- *   node check-for-new-pdf.js [json-file-path]
+ *   node check-for-new-pdf.js [json-file-path] [html-file-path]
  *
  * If json-file-path is not provided, defaults to swim_time_standards.json in project root
+ * If html-file-path is provided, that local file is parsed instead of fetching the live
+ * page, which is how the test suite stays deterministic and offline
+ *
+ * Exit codes:
+ *   0 - a newer year range or a changed URL was found
+ *   1 - no change; the stored version is current
+ *   2 - the check could not complete (fetch failed, page or JSON unreadable)
  */
 
 const https = require('https');
@@ -21,6 +28,9 @@ const TARGET_URL = 'https://www.oregonswimming.org/page/competition/time-standar
 const PROJECT_ROOT = path.join(__dirname, '..', '..');
 const DEFAULT_JSON_FILE = path.join(PROJECT_ROOT, 'swim_time_standards.json');
 const JSON_FILE = process.argv[2] ? path.resolve(process.argv[2]) : DEFAULT_JSON_FILE;
+
+// Optional local HTML file, used by the tests in place of the live page
+const HTML_FILE = process.argv[3] ? path.resolve(process.argv[3]) : null;
 
 function fetchPage(url) {
   return new Promise((resolve, reject) => {
@@ -212,10 +222,17 @@ async function main() {
     const currentData = loadCurrentData();
     console.log(`✓ Loaded: "${currentData.title}" (${currentData.yearRange})\n`);
 
-    // Fetch the webpage
-    console.log('Fetching webpage...');
-    const html = await fetchPage(TARGET_URL);
-    console.log(`✓ Successfully fetched ${html.length} bytes\n`);
+    // Read the page, from a local fixture when one was passed
+    let html;
+    if (HTML_FILE) {
+      console.log(`Reading local page fixture ${path.basename(HTML_FILE)}...`);
+      html = fs.readFileSync(HTML_FILE, 'utf8');
+      console.log(`✓ Read ${html.length} bytes\n`);
+    } else {
+      console.log('Fetching webpage...');
+      html = await fetchPage(TARGET_URL);
+      console.log(`✓ Successfully fetched ${html.length} bytes\n`);
+    }
 
     // Check for changes
     const result = checkForNewPDF(html, currentData);
