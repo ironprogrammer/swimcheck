@@ -9,9 +9,10 @@
 #   GH_TOKEN - GitHub token for creating PRs (provided by GitHub Actions)
 #
 # Behavior:
-#   - If a branch for this year range already exists, the script will fail
-#   - This prevents redundant processing while a PR is under review
-#   - Review and merge existing PRs before the next scheduled run
+#   - The branch name is keyed on the year range plus a short hash of the PDF URL
+#   - If that branch already exists, the script will fail
+#   - This prevents redundant processing of the same PDF while a PR is under review,
+#     while a corrected PDF for the same year still gets its own branch
 
 set -e  # Exit on error
 
@@ -37,9 +38,10 @@ echo "PDF URL: $PDF_URL"
 echo "Link text: $LINK_TEXT"
 echo ""
 
-# Step 1: Extract year range for branch name
+# Step 1: Build branch name from year range and PDF URL
 YEAR_RANGE=$(echo "$LINK_TEXT" | grep -oE '[0-9]{4}-[0-9]{4}' || echo "unknown")
-BRANCH_NAME="update-time-standards-${YEAR_RANGE}"
+URL_HASH=$(printf '%s' "$PDF_URL" | git hash-object --stdin | cut -c1-7)
+BRANCH_NAME="update-time-standards-${YEAR_RANGE}-${URL_HASH}"
 
 echo "Step 1: Checking for existing branch/PR..."
 cd "$PROJECT_ROOT"
