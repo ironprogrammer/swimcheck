@@ -36,7 +36,10 @@ info() {
 
 # Create test JSON files
 setup_test_data() {
-  # Test 1: Valid data
+  # Test 1: Valid data. B and B+ must satisfy the OSI formula the progression
+  # validator enforces, not just A < B+ < B:
+  #   B  = floor(A * 1.1, 1 decimal) + 0.09
+  #   B+ = floor((A + B) / 2, 1 decimal) + 0.09
   cat > "$SCRIPT_DIR/test-valid.json" <<'EOF'
 {
   "title": "2024-2025 Test Standards",
@@ -50,8 +53,8 @@ setup_test_data() {
           "events": [
             {
               "name": "50 Free",
-              "SCY": { "A": "30.00", "B+": "31.00", "B": "32.00" },
-              "SCM": { "A": "33.00", "B+": "34.00", "B": "35.00" },
+              "SCY": { "A": "30.00", "B+": "31.59", "B": "33.09" },
+              "SCM": { "A": "33.00", "B+": "34.69", "B": "36.39" },
               "LCM": { "A": null, "B+": null, "B": null }
             }
           ]
@@ -60,8 +63,8 @@ setup_test_data() {
           "events": [
             {
               "name": "50 Free",
-              "SCY": { "A": "29.00", "B+": "30.00", "B": "31.00" },
-              "SCM": { "A": "32.00", "B+": "33.00", "B": "34.00" },
+              "SCY": { "A": "29.00", "B+": "30.49", "B": "31.99" },
+              "SCM": { "A": "32.00", "B+": "33.69", "B": "35.29" },
               "LCM": { "A": null, "B+": null, "B": null }
             }
           ]

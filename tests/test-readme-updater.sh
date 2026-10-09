@@ -10,6 +10,9 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 UPDATER_SCRIPT="$PROJECT_ROOT/.github/scripts/update-readme-inconsistencies.js"
 FIXTURES_DIR="$SCRIPT_DIR/fixtures"
 
+# Remove temp files even when a test bails out early
+trap 'rm -f "$SCRIPT_DIR/test-readme-temp.md" "$SCRIPT_DIR/test-courses.json" "$SCRIPT_DIR/test-standards.json"' EXIT
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -35,24 +38,37 @@ info() {
   echo -e "${YELLOW}ℹ${NC} $1"
 }
 
-# Test 1: Age sorting - numeric order
-test_age_numeric_sorting() {
-  info "Test: Age groups sort numerically (not alphabetically)"
-
-  # Create temp README
+# Writes a temp README with the markers the updater needs to find
+write_temp_readme() {
   cat > "$SCRIPT_DIR/test-readme-temp.md" <<'EOF'
 ## Data Inconsistencies ⚠️
 
 The following issues were observed in the source data from the OSI site, and are highlighted in the app:
 
+<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->
 | Age/Gender | Event | Course | Standard | Value | Issue |
 | ---------- | ----- | ------ | -------- | ----- | ----- |
+<!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->
 
 \* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
 EOF
+}
 
-  # Run updater with test fixture
-  node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$FIXTURES_DIR/test-issues-sorting.json" >/dev/null 2>&1
+# Runs the updater, reporting a failure instead of aborting the whole suite
+run_updater() {
+  if ! node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$1" >/dev/null 2>&1; then
+    fail "Updater exited non-zero for $(basename "$1")"
+    return 1
+  fi
+}
+
+# Test 1: Age sorting - numeric order
+test_age_numeric_sorting() {
+  info "Test: Age groups sort numerically (not alphabetically)"
+
+  write_temp_readme
+
+  run_updater "$FIXTURES_DIR/test-issues-sorting.json" || return 0
 
   # Extract just the age numbers from the table
   AGES=$(grep "^| Girls\|^| Boys" "$SCRIPT_DIR/test-readme-temp.md" | grep -o "Girls [^|]*\|Boys [^|]*" | sed 's/Girls //' | sed 's/Boys //' | awk '{print $1}')
@@ -91,18 +107,9 @@ EOF
 test_range_after_singles() {
   info "Test: Age ranges come after single ages (11, 12, 11-12)"
 
-  cat > "$SCRIPT_DIR/test-readme-temp.md" <<'EOF'
-## Data Inconsistencies ⚠️
+  write_temp_readme
 
-The following issues were observed in the source data from the OSI site, and are highlighted in the app:
-
-| Age/Gender | Event | Course | Standard | Value | Issue |
-| ---------- | ----- | ------ | -------- | ----- | ----- |
-
-\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
-EOF
-
-  node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$FIXTURES_DIR/test-issues-sorting.json" >/dev/null 2>&1
+  run_updater "$FIXTURES_DIR/test-issues-sorting.json" || return 0
 
   # Check that 11 and 12 appear before 11-12
   AGES_11_12=$(grep "^| Girls\|^| Boys" "$SCRIPT_DIR/test-readme-temp.md" | grep -o "Girls [^|]*\|Boys [^|]*" | sed 's/Girls //' | sed 's/Boys //' | awk '{print $1}' | grep -E "^11$|^12$|^11-12$")
@@ -126,18 +133,9 @@ EOF
 test_gender_sorting() {
   info "Test: Girls appear before Boys for same age"
 
-  cat > "$SCRIPT_DIR/test-readme-temp.md" <<'EOF'
-## Data Inconsistencies ⚠️
+  write_temp_readme
 
-The following issues were observed in the source data from the OSI site, and are highlighted in the app:
-
-| Age/Gender | Event | Course | Standard | Value | Issue |
-| ---------- | ----- | ------ | -------- | ----- | ----- |
-
-\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
-EOF
-
-  node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$FIXTURES_DIR/test-issues-sorting.json" >/dev/null 2>&1
+  run_updater "$FIXTURES_DIR/test-issues-sorting.json" || return 0
 
   # Find age 14 entries and check Girls comes before Boys
   AGE_14_GENDERS=$(grep "^| Girls 14\|^| Boys 14" "$SCRIPT_DIR/test-readme-temp.md" | grep -o "^| Girls\|^| Boys" | sed 's/^| //')
@@ -168,18 +166,9 @@ test_course_sorting() {
 ]
 EOF
 
-  cat > "$SCRIPT_DIR/test-readme-temp.md" <<'EOF'
-## Data Inconsistencies ⚠️
+  write_temp_readme
 
-The following issues were observed in the source data from the OSI site, and are highlighted in the app:
-
-| Age/Gender | Event | Course | Standard | Value | Issue |
-| ---------- | ----- | ------ | -------- | ----- | ----- |
-
-\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
-EOF
-
-  node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$SCRIPT_DIR/test-courses.json" >/dev/null 2>&1
+  run_updater "$SCRIPT_DIR/test-courses.json" || return 0
 
   COURSES=$(grep "^| Girls 10" "$SCRIPT_DIR/test-readme-temp.md" | awk -F'|' '{print $4}' | awk '{$1=$1};1')
 
@@ -209,18 +198,9 @@ test_standard_sorting() {
 ]
 EOF
 
-  cat > "$SCRIPT_DIR/test-readme-temp.md" <<'EOF'
-## Data Inconsistencies ⚠️
+  write_temp_readme
 
-The following issues were observed in the source data from the OSI site, and are highlighted in the app:
-
-| Age/Gender | Event | Course | Standard | Value | Issue |
-| ---------- | ----- | ------ | -------- | ----- | ----- |
-
-\* *The OSI PDF may contain errors, and so can this app! Refer directly to OSI for questions/corrections.*
-EOF
-
-  node "$UPDATER_SCRIPT" "$SCRIPT_DIR/test-readme-temp.md" "$SCRIPT_DIR/test-standards.json" >/dev/null 2>&1
+  run_updater "$SCRIPT_DIR/test-standards.json" || return 0
 
   STANDARDS=$(grep "^| Girls 10" "$SCRIPT_DIR/test-readme-temp.md" | awk -F'|' '{print $5}' | awk '{$1=$1};1')
 
