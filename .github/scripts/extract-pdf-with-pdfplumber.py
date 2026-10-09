@@ -17,6 +17,7 @@ Arguments:
 
 import sys
 import json
+from collections import Counter
 import urllib.request
 import pdfplumber
 from datetime import date
@@ -143,11 +144,18 @@ def extract_event_data(table_rows, start_idx, age_group):
 
 
 def extract_tables_from_pdf(pdf_data):
-    """Extract all tables from PDF and parse into JSON structure"""
+    """
+    Extract all tables from PDF and parse into JSON structure
+
+    Raises ValueError if no age group headers are found, which means the PDF
+    does not use the expected layout: 19-column tables with Girls times in
+    columns 0-8, the event or age in column 9, and Boys times in columns 10-18.
+    """
 
     age_groups = []
     age_groups_dict = {}  # Track age groups by name to merge across pages
     current_age = None  # Track the last age group for continuations
+    row_widths = Counter()  # Column counts seen, reported if the layout is unexpected
 
     with pdfplumber.open(BytesIO(pdf_data)) as pdf:
         for page_num, page in enumerate(pdf.pages, 1):
@@ -156,6 +164,7 @@ def extract_tables_from_pdf(pdf_data):
             tables = page.extract_tables()
 
             for table in tables:
+                row_widths.update(len(row) for row in table)
                 i = 0
                 while i < len(table):
                     row = table[i]
@@ -202,6 +211,17 @@ def extract_tables_from_pdf(pdf_data):
                         i = next_i
                     else:
                         i += 1
+
+    if not age_groups_dict:
+        if row_widths:
+            seen = ', '.join(f"{width} cols x{count}" for width, count in sorted(row_widths.items()))
+        else:
+            seen = 'no tables found'
+        raise ValueError(
+            "Unexpected PDF format: no age group headers found. Expected 19-column "
+            "tables with 'Girls' in column 0, the age in column 9, and 'Boys' in "
+            f"column 10. Table rows seen: {seen}."
+        )
 
     # Convert dictionary back to list format
     for age, data in age_groups_dict.items():

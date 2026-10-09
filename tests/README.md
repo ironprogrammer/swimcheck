@@ -6,9 +6,10 @@
 ./tests/test-pdf-checker.sh
 ./tests/test-validation.sh
 ./tests/test-readme-updater.sh
+./tests/test-pdf-extractor.sh   # requires Python and pdfplumber
 ```
 
-All three run offline and need no setup beyond Node.
+All four run offline. The first three need only Node.
 
 ## Test Fixtures
 
@@ -21,3 +22,7 @@ Minimal JSON fixtures in `fixtures/` test different scenarios against it:
 - `old-version.json` - Older year (expects newer year detection)
 - `url-changed.json` - Same year, different URL (expects data correction detection)
 - `test-issues-sorting.json` - Inconsistency list covering the README table's sort order
+
+PDF fixtures for the extractor:
+- `2024-2025-osi-time-standards-full_040221.pdf` - PDF in the expected layout (expects extraction)
+- `not-time-standards.pdf` - PDF with no standards tables (expects an unexpected-format error)
