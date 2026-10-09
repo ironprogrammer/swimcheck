@@ -15,7 +15,8 @@
  * Exit codes:
  *   0 - a newer year range or a changed URL was found
  *   1 - no change; the stored version is current
- *   2 - the check could not complete (fetch failed, page or JSON unreadable)
+ *   2 - the check could not complete (fetch failed, page or JSON unreadable,
+ *       or no OSI Time Standards links found on the page)
  */
 
 const https = require('https');
@@ -48,6 +49,8 @@ function fetchPage(url) {
       res.on('end', () => {
         resolve(data);
       });
+
+      res.on('error', reject);
     }).on('error', (err) => {
       reject(err);
     });
@@ -139,6 +142,12 @@ function checkForNewPDF(html, currentData) {
   }
 
   console.log(`Found ${osiLinks.length} OSI Time Standards link(s) on page\n`);
+
+  // The current year's link should always be listed, so none at all means the
+  // page changed in a way this parser no longer understands
+  if (osiLinks.length === 0) {
+    throw new Error('No OSI Time Standards links found on the page; its markup may have changed');
+  }
 
   // Check for changes
   let changeDetected = false;

@@ -13,7 +13,8 @@ All three run offline and need no setup beyond Node.
 ## Test Fixtures
 
 `fixtures/osi-time-standards-page.html` is a trimmed copy of the OSI Time
-Standards page, used in place of the live site.
+Standards page, used in place of the live site. `fixtures/osi-page-no-links.html`
+is a page with no OSI links (expects an error).
 
 Minimal JSON fixtures in `fixtures/` test different scenarios against it:
 - `current-version.json` - Up-to-date version (expects no changes)
