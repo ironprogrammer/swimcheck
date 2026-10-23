@@ -10,9 +10,10 @@
 #
 # Behavior:
 #   - The branch name is keyed on the year range plus a short hash of the PDF URL
-#   - If that branch already exists, the script will fail
-#   - This prevents redundant processing of the same PDF while a PR is under review,
-#     while a corrected PDF for the same year still gets its own branch
+#   - If that branch already has an open PR, the script exits 0 without reprocessing,
+#     so the daily check stays green while the PR waits for review
+#   - If the branch exists without an open PR, the script fails so it can be cleaned up
+#   - A corrected PDF for the same year still gets its own branch
 
 set -e  # Exit on error
 
@@ -69,10 +70,10 @@ if git rev-parse --verify "$BRANCH_NAME" >/dev/null 2>&1 || git rev-parse --veri
     echo "An open pull request already exists for this update:"
     echo "  PR #$PR_NUMBER: $PR_URL"
     echo ""
-    echo "Please review and merge the existing PR before running again."
-    echo "This prevents redundant processing of the same PDF update."
+    echo "Skipping reprocessing until the existing PR is merged or closed."
     echo "========================================"
-    exit 1
+    echo "::notice::Update PR #$PR_NUMBER is awaiting review: $PR_URL"
+    exit 0
   else
     echo "The branch exists but no open PR was found."
     echo "Please manually clean up the branch or merge/close any existing PR."
