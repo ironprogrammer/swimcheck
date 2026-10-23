@@ -79,6 +79,8 @@ Creates a feature branch and pull request with:
 - Updated `README.md` (if inconsistencies found)
 - Detailed description of changes
 
+If an open PR already exists for the same PDF, the run skips reprocessing and passes with a notice linking to that PR.
+
 ## Testing
 
 ### Test Validation Scripts
