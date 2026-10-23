@@ -15,7 +15,7 @@ Please consider helping me cover my kid's swim meet fees!
 Time standards are sourced from the [Oregon Swimming Time Standards](https://www.oregonswimming.org/page/competition/time-standards), which are typically updated 1-2 times per year.
 
 <!-- AUTO-GENERATED-CURRENT-STANDARDS:START -->
-**Current standards:** [2025-2026 OSI Time Standards A/B+/B](https://www.oregonswimming.org/wzorlsc/UserFiles/Image/QuickUpload/osi-2025-2026-a-b-b-time-standards_035227.pdf)
+**Current standards:** [2026-2027 OSI Time Standards A/B+/B](https://www.oregonswimming.org/wzorlsc/UserFiles/Image/QuickUpload/2026-2027-time-standards_056854.pdf)
 <!-- AUTO-GENERATED-CURRENT-STANDARDS:END -->
 
 ## Data Inconsistencies ⚠️
@@ -25,11 +25,15 @@ The following issues were observed in the source data from the OSI site\*, and a
 <!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:START -->
 | Age/Gender | Event      | Course | Standard | Value       | Issue              |
 | ---------- | ---------- | ------ | -------- | ----------- | ------------------- |
-| Girls 11 | 1500 Free | LCM | B | `24:38.39⚠️` | B should be 24:18.39 (A × 1.1, rounded to 1 decimal + 0.09) |
-| Girls 12 | 1500 Free | LCM | B | `24:38.39⚠️` | B should be 24:18.39 (A × 1.1, rounded to 1 decimal + 0.09) |
-| Girls 13 | 1500 Free | LCM | B | `24:38.39⚠️` | B should be 24:18.39 (A × 1.1, rounded to 1 decimal + 0.09) |
-| Boys 14 | 200 Free | SCY | B+ | `2:05.49⚠️` | B+ should be 2:11.79 ((A + B) / 2, rounded to 1 decimal + 0.09) |
-| Boys 15 & Over* | 1500 Free | SCM | B | `21:59.09⚠️` | B should be 21:58.99 (A × 1.1, rounded to 1 decimal + 0.09) |
+| Boys 11 | 1500 Free | SCM | B | `23:42.79⚠️` | Invalid progression: B should be 23:42.89 |
+| Boys 12 | 1500 Free | SCM | B | `23:42.79⚠️` | Invalid progression: B should be 23:42.89 |
+| Boys 12 | 200 Breast | SCY | B+ | `2:98.79⚠️` | Invalid format |
+| Boys 13 | 1500 Free | SCM | B | `23:42.79⚠️` | Invalid progression: B should be 23:42.89 |
+| Boys 13 | 400 Free | SCM | B | `5:98.99⚠️` | Invalid format |
+| Girls 14 | 800 Free | SCM | B+ | `11:48.69⚠️` | Invalid progression: B+ should be 11:48.79 |
+| Girls 14 | 800 Free | SCM | B | `12:22.39⚠️` | Invalid progression: B should be 12:22.49 |
+| Boys 14 | 200 Free | SCY | B+ | `2:05.49⚠️` | Invalid progression: B+ should be 2:09.89 |
+| Boys 15 & Over* | 1500 Free | SCM | B | `21:59.09⚠️` | Invalid progression: B should be 21:58.99 |
 <!-- AUTO-GENERATED-INCONSISTENCIES-TABLE:END -->
 
 ### Issue Key
