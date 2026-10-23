@@ -30,8 +30,8 @@ The following issues were observed in the source data from the OSI site\*, and a
 | Boys 12 | 1500 Free | SCM | B | `23:42.79⚠️` | Invalid progression: B should be 23:42.89 |
 | Boys 12 | 200 Breast | SCY | B+ | `2:98.79⚠️` | Invalid format |
 | Boys 13 | 1500 Free | SCM | B | `23:42.79⚠️` | Invalid progression: B should be 23:42.89 |
-| Boys 13 | 400 Free | SCM | B | `5:98.99⚠️` | Invalid format |
 | Boys 13 | 400 Free | SCM | A | `5:26.31` | Unusual A time |
+| Boys 13 | 400 Free | SCM | B | `5:98.99⚠️` | Invalid format |
 | Girls 14 | 800 Free | SCM | B+ | `11:48.69⚠️` | Invalid progression: B+ should be 11:48.79 |
 | Girls 14 | 800 Free | SCM | B | `12:22.39⚠️` | Invalid progression: B should be 12:22.49 |
 | Boys 14 | 200 Free | SCY | B+ | `2:05.49⚠️` | Invalid progression: B+ should be 2:09.89 |
@@ -42,7 +42,7 @@ The following issues were observed in the source data from the OSI site\*, and a
 ### Issue Key
 - **Invalid format**: The time does not match the pattern `MM:SS.MS` or `SS.MS`, or exceed 60-second increment notation (e.g. `96.99` seconds).
 - **Invalid progression**: The time does not fit in the expected "faster to slower" time progression calculation for standards: `A < B+ < B`.
-- **Unusual A time**: OSI A times end in `.x9`, but this one does not. Its B+ and B times are derived from it as printed. Not highlighted in the app.
+- **Unusual A time**: OSI A times normally end in 9 (e.g. `1:05.79`), but this one does not. It is still used as the A standard, so it is not highlighted in the app.
 
 > 🪲 Encounter any other issues? Head over to the [Issues tab](https://github.com/ironprogrammer/swimcheck/issues) and let me know!
 

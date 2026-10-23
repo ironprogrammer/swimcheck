@@ -6,6 +6,8 @@
  * - Flags invalid seconds (e.g., 96 in 1:96.28)
  * - Flags invalid format times
  * - Appends ⚠️ emoji to invalid times
+ * - Reports A times that don't end in 9 (OSI convention), without a ⚠️, since
+ *   they are valid standards the app should still compare against
  *
  * Returns modified JSON with warnings appended
  */
@@ -81,6 +83,15 @@ function validateTimeFormat(timeStr) {
 }
 
 /**
+ * Check whether a valid A time breaks the OSI convention of ending in 9 (e.g. 1:05.79)
+ *
+ * @returns {boolean} True if the A time is unusual
+ */
+function isUnusualATime(timeStr) {
+  return !stripWarning(timeStr).endsWith('9');
+}
+
+/**
  * Process JSON data and flag invalid times
  */
 function processTimeStandards(data) {
@@ -124,6 +135,16 @@ function processTimeStandards(data) {
                 standard,
                 value: timeValue.includes(WARNING_EMOJI) ? timeValue : timeValue + WARNING_EMOJI,
                 issue: validation.issue
+              });
+            } else if (standard === 'A' && isUnusualATime(timeValue)) {
+              issues.push({
+                age,
+                gender,
+                event: eventName,
+                course,
+                standard,
+                value: timeValue,
+                issue: 'Unusual A time'
               });
             }
           });
@@ -184,5 +205,5 @@ function main() {
 if (require.main === module) {
   main();
 } else {
-  module.exports = { validateTimeFormat, processTimeStandards, stripWarning };
+  module.exports = { validateTimeFormat, isUnusualATime, processTimeStandards, stripWarning };
 }

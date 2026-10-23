@@ -53,8 +53,8 @@ setup_test_data() {
           "events": [
             {
               "name": "50 Free",
-              "SCY": { "A": "30.00", "B+": "31.59", "B": "33.09" },
-              "SCM": { "A": "33.00", "B+": "34.69", "B": "36.39" },
+              "SCY": { "A": "30.09", "B+": "31.59", "B": "33.09" },
+              "SCM": { "A": "33.09", "B+": "34.79", "B": "36.39" },
               "LCM": { "A": null, "B+": null, "B": null }
             }
           ]
@@ -63,8 +63,8 @@ setup_test_data() {
           "events": [
             {
               "name": "50 Free",
-              "SCY": { "A": "29.00", "B+": "30.49", "B": "31.99" },
-              "SCM": { "A": "32.00", "B+": "33.69", "B": "35.29" },
+              "SCY": { "A": "29.09", "B+": "30.59", "B": "31.99" },
+              "SCM": { "A": "32.09", "B+": "33.69", "B": "35.29" },
               "LCM": { "A": null, "B+": null, "B": null }
             }
           ]
@@ -208,6 +208,54 @@ test_time_format_valid() {
   rm -f "$SCRIPT_DIR/test-valid-temp.json"
 }
 
+# Test 4b: Time format validation - A time not ending in 9
+test_time_format_unusual_a() {
+  info "Test: Time format validation reports unusual A times"
+
+  cat > "$SCRIPT_DIR/test-unusual-a.json" <<'EOF'
+{
+  "title": "2024-2025 Test Standards",
+  "sourceUrl": "https://example.com/test.pdf",
+  "generatedOn": "2025-10-26",
+  "ageGroups": [
+    {
+      "age": "9",
+      "genders": {
+        "Girls": { "events": [] },
+        "Boys": {
+          "events": [
+            {
+              "name": "100 Breast",
+              "SCY": { "A": null, "B+": null, "B": null },
+              "SCM": { "A": null, "B+": null, "B": null },
+              "LCM": { "A": "2:19.64", "B+": "2:26.69", "B": "2:33.69" }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+EOF
+
+  OUTPUT=$(node "$VALIDATORS_DIR/validate-time-format.js" "$SCRIPT_DIR/test-unusual-a.json" 2>&1)
+
+  if echo "$OUTPUT" | grep -q '"value":"2:19.64","issue":"Unusual A time"'; then
+    pass "Unusual A time reported"
+  else
+    fail "Unusual A time not reported"
+  fi
+
+  # The A time is a valid standard, so it must not be marked in the data
+  if grep -q '"A": "2:19.64"' "$SCRIPT_DIR/test-unusual-a.json"; then
+    pass "No warning emoji added to unusual A time"
+  else
+    fail "Warning emoji added to unusual A time"
+  fi
+
+  rm -f "$SCRIPT_DIR/test-unusual-a.json"
+}
+
 # Test 5: Progression validation - invalid progression
 test_progression_invalid() {
   info "Test: Progression validation with invalid progression"
@@ -311,6 +359,7 @@ test_structure_valid
 test_structure_invalid
 test_time_format_invalid
 test_time_format_valid
+test_time_format_unusual_a
 test_progression_invalid
 test_progression_valid
 test_progression_skips_invalid_format
